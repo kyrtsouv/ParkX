@@ -20,8 +20,7 @@ interface JavaResultCallback<T> {
 
 @Serializable
 data class Message(
-    val id: Int,
-    val content: String
+    val id: Int, val content: String
 )
 
 object CoroutineExecutor {
@@ -72,9 +71,20 @@ object SupabaseManager {
     }
 
     @JvmStatic
-    fun signOut(
-        callback: JavaResultCallback<String>
-    ) {
+    fun signUp(email: String, password: String, callback: JavaResultCallback<String>) {
+        CoroutineExecutor.runSuspend({ suspendedSignIn(email, password) }, callback)
+    }
+
+    private suspend fun suspendedSignUp(email: String, password: String): String {
+        client.auth.signInWith(Email) {
+            this.email = email
+            this.password = password
+        }
+        return "Sign Up successful"
+    }
+
+    @JvmStatic
+    fun signOut(callback: JavaResultCallback<String>) {
         CoroutineExecutor.runSuspend(
             { suspendedSignOut() }, callback
         )
@@ -86,9 +96,7 @@ object SupabaseManager {
     }
 
     @JvmStatic
-    fun getMessages(
-        callback: JavaResultCallback<List<String>>
-    ) {
+    fun getMessages(callback: JavaResultCallback<List<String>>) {
         CoroutineExecutor.runSuspend(
             { suspendedGetMessages() }, callback
         )
