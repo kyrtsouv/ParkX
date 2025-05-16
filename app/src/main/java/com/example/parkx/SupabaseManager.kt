@@ -49,8 +49,8 @@ object SupabaseManager {
 
     fun init() {
         client = createSupabaseClient(
-            supabaseUrl = "https://tzqwqwlnomlcmgeittpa.supabase.co",
-            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6cXdxd2xub21sY21nZWl0dHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNTQ5OTEsImV4cCI6MjA1OTYzMDk5MX0.X_FYxqGdpEzAtnC9aWtPwvWmvZPHKVIm3RAZBun1k0o"
+            supabaseUrl = "https://pymrbdesqdzscvaewbjz.supabase.co",
+            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5bXJiZGVzcWR6c2N2YWV3Ymp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1MjUxMDIsImV4cCI6MjA2MjEwMTEwMn0.F8sBvUeeoPjaA21_nR3AWIhVMkR10ZfN2iwNQvCV3Co"
         ) {
             install(Auth)
             install(Postgrest)
@@ -76,7 +76,7 @@ object SupabaseManager {
     }
 
     private suspend fun suspendedSignUp(email: String, password: String): String {
-        client.auth.signInWith(Email) {
+        client.auth.signUpWith(Email) {
             this.email = email
             this.password = password
         }
