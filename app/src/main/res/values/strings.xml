@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">ParkX</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="button">Button</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="register">Register</string>
+    <string name="login" > login </string>
+    <string name="welcome_to_parkx">Welcome to PARKX! Please login or if you don\'t have an account register</string>
 </resources>

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
 
     EditText email,password;
-    Button sign_in;
+    Button  login;
     private static final int Location_Permission_Code=100;
     private static final int GPS_REQUEST_CODE = 101;
 
@@ -35,16 +35,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textView);
+
 
         SupabaseManager.INSTANCE.init();
 
-        textView.setText("What's your action?");
 
-        email=findViewById(R.id.editTextText1);
-        password=findViewById(R.id.editTextText2);
-        sign_in=findViewById(R.id.button);
-        sign_in.setOnClickListener(view -> {
+
+
+        login=findViewById(R.id.login_button);
+
+        login.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
