@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.parkx.supabase.SupabaseManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
 
     EditText email,password;
-    Button sign_in;
+    Button  login;
     private static final int Location_Permission_Code=100;
     private static final int GPS_REQUEST_CODE = 101;
 
@@ -35,16 +37,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textView);
+
 
         SupabaseManager.INSTANCE.init();
 
-        textView.setText("What's your action?");
 
-        email=findViewById(R.id.editTextText1);
-        password=findViewById(R.id.editTextText2);
-        sign_in=findViewById(R.id.button);
-        sign_in.setOnClickListener(view -> {
+
+
+        login=findViewById(R.id.login_button);
+
+        login.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -57,7 +59,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        checkLocationPermission();
+        textView = findViewById(R.id.error_log);
+
+        SupabaseManager.signIn("test@email.com", "password", new JavaResultCallback<String>() {
+            @Override
+            public void onSuccess(String value) {
+                System.out.println(value);
+                textView.setText(value);
+
+                SupabaseManager.getSpots(new JavaResultCallback<List<ParkingSpot>>() {
+                    @Override
+                    public void onSuccess(List<ParkingSpot> value) {
+                        System.out.println(value);
+                        textView.append(value.toString());
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable exception) {
+                        textView.append(exception.getMessage());
+                    }
+                });
+
+
+
+            }
+
+            @Override
+            public void onError(@NotNull Throwable exception) {
+                System.out.println(exception.getMessage());
+                textView.setText(exception.getMessage());
+            }
+        });
+//        checkLocationPermission();
     }
 
     private void checkLocationPermission() {
@@ -84,11 +117,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SignIn(View view) {
-        SupabaseManager.signIn("anothervalid@email.com", "password", new JavaResultCallback<String>() {
+        SupabaseManager.signIn("test@email.com", "password", new JavaResultCallback<String>() {
             @Override
             public void onSuccess(String value) {
                 System.out.println(value);
                 textView.setText(value);
+
+                String md = SupabaseManager.getMetadata();
+                System.out.println(md);
+                textView.setText(md);
             }
 
             @Override
@@ -115,26 +152,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void GetMessages(View view) {
-        SupabaseManager.getMessages(new JavaResultCallback<List<String>>() {
-            @Override
-            public void onSuccess(List<String> value) {
-                System.out.println(value);
-                textView.setText(value.toString());
-            }
-
-            @Override
-            public void onError(@NotNull Throwable exception) {
-                System.out.println(exception.getMessage());
-                textView.setText(exception.getMessage());
-            }
-        });
-    }
-
-    public void Reset(View view) {
-        textView.setText("What's your action?");
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -146,5 +163,22 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Η άδεια τοποθεσίας είναι απαραίτητη.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void SignUp(View view) {
+        SupabaseManager.signUp("anothertest@email.com", "password", new JavaResultCallback<String>() {
+            @Override
+            public void onSuccess(String value) {
+                System.out.println(value);
+                textView.setText(value);
+            }
+
+            @Override
+            public void onError(@NotNull Throwable exception) {
+                String result = exception.toString();
+                System.out.println(result);
+                textView.setText(result);
+            }
+        });
     }
 }
