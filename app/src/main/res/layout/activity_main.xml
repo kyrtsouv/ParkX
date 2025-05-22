@@ -23,8 +23,6 @@
             app:layout_constraintStart_toStartOf="parent" />
 
 
-
-
         <!-- Email EditText -->
         <EditText
             android:id="@+id/login_email"

@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText email,password;
     Button  login;
-    private static final int Location_Permission_Code=100;
-    private static final int GPS_REQUEST_CODE = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +40,19 @@ public class MainActivity extends AppCompatActivity {
 
         SupabaseManager.INSTANCE.init();
 
-
-
-
         login=findViewById(R.id.login_button);
-
+        /// Αυτο πρεπει να φυγει !!!
         login.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            Intent intent = new Intent(MainActivity.this, BasicMenu.class);
             startActivity(intent);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         Location_Permission_Code);
             } else {
                 startActivity(new Intent(MainActivity.this, MapsActivity.class));
-            }
+            }*/
         });
 
         textView = findViewById(R.id.error_log);
@@ -80,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-
             }
 
             @Override
@@ -90,30 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(exception.getMessage());
             }
         });
-//        checkLocationPermission();
-    }
 
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Ask for permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    Location_Permission_Code);
-        } else {
-            // Permission already granted
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            if (!gpsEnabled) {
-                Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivityForResult(intent, GPS_REQUEST_CODE);
-            } else {
-                // GPS is already on, proceed with location features
-                Toast.makeText(this, "GPS is ON", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     public void SignIn(View view) {
@@ -126,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 String md = SupabaseManager.getMetadata();
                 System.out.println(md);
                 textView.setText(md);
+
+                /// επιτυχής σύνδεση οδηγεί στο Βασικό μενού της Εφαρμογής
+                //startActivity(new Intent(MainActivity.this, BasicMenu.class));
             }
 
             @Override
@@ -150,19 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(exception.getMessage());
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Location_Permission_Code) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(MainActivity.this, MapsActivity.class));
-            } else {
-                Toast.makeText(this, "Η άδεια τοποθεσίας είναι απαραίτητη.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     public void SignUp(View view) {

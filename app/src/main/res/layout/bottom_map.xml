@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_map"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/textView_MAP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Τίτλος Marker"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:paddingBottom="12dp" />
+
+    <Button
+        android:id="@+id/button_MAP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:text="Αίτηση Σύζευξης"
+        android:textColor="@android:color/white" />
+
+
+</LinearLayout>
