@@ -1,4 +1,4 @@
-package com.example.parkx
+package com.example.parkx.utils
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,8 +12,8 @@ data class NewParkingSpot(
 data class ParkingSpot(
     val id: Int,
     @SerialName("user_id") val userId: String,
-    val location: String,
-    val taken: Boolean
+    val lat: Double,
+    val long: Double
 )
 
 @Serializable
@@ -31,3 +31,10 @@ data class Request(
     @SerialName("requester_id") val requesterId: String,
     val status: String
 )
+
+@Serializable
+enum class RequestStatus {
+    PENDING,
+    ACCEPTED,
+    REJECTED;
+}

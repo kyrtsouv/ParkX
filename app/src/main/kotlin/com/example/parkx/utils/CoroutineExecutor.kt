@@ -1,4 +1,4 @@
-package com.example.parkx
+package com.example.parkx.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

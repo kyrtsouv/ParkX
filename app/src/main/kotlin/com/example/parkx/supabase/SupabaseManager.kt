@@ -1,8 +1,8 @@
 package com.example.parkx.supabase
 
-import com.example.parkx.CoroutineExecutor
-import com.example.parkx.JavaResultCallback
-import com.example.parkx.ParkingSpot
+import com.example.parkx.utils.CoroutineExecutor
+import com.example.parkx.utils.JavaResultCallback
+import com.example.parkx.utils.ParkingSpot
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -44,14 +44,14 @@ object SupabaseManager {
 
 
     @JvmStatic
-    fun getSpots(callback: JavaResultCallback<List<ParkingSpot>>) {
-        CoroutineExecutor.runSuspend({ DatabaseService.getSpots() }, callback)
+    fun getSpots(lat: Double, long: Double, callback: JavaResultCallback<List<ParkingSpot>>) {
+        CoroutineExecutor.runSuspend({ DatabaseService.getSpots(lat, long) }, callback)
     }
 
     @JvmStatic
-    fun createParkingSpot(location: String, callback: JavaResultCallback<String>) {
+    fun publishSpot(location: String, callback: JavaResultCallback<String>) {
         CoroutineExecutor.runSuspend(
-            { DatabaseService.createSpot(location) }, callback
+            { DatabaseService.publishSpot(location) }, callback
         )
     }
 

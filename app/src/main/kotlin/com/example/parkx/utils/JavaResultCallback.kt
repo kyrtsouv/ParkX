@@ -1,4 +1,4 @@
-package com.example.parkx
+package com.example.parkx.utils
 
 interface JavaResultCallback<T> {
     fun onSuccess(value: T)

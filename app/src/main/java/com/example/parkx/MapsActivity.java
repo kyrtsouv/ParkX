@@ -1,9 +1,5 @@
 package com.example.parkx;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,6 +12,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import com.example.parkx.databinding.ActivityMapBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,17 +28,15 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.parkx.databinding.ActivityMapBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int Location_Permission_Code = 1;
+    private final int RADIUS = 800;//ακτινα κυκλου γύρο από το χρηστη
     private GoogleMap mMap;
     private ActivityMapBinding binding;
     private FusedLocationProviderClient locationProvider;
-    private static final int Location_Permission_Code=1;
-    private final int RADIUS=800;//ακτινα κυκλου γύρο από το χρηστη
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,37 +45,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        locationProvider= LocationServices.getFusedLocationProviderClient(this);
+        locationProvider = LocationServices.getFusedLocationProviderClient(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
     }
 
     @Override
-    public void onMapReady(@NonNull GoogleMap   googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    Location_Permission_Code);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Location_Permission_Code);
             return;
         }
 
         mMap.setMyLocationEnabled(true);
 
-        locationProvider.getLastLocation().addOnSuccessListener(this,location -> {
-            if(location!=null){
-                LatLng locationXY = new LatLng(location.getLatitude(),location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(locationXY).title("My Location: "+locationXY));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationXY,13f));
+        locationProvider.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                LatLng locationXY = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(locationXY).title("My Location: " + locationXY));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationXY, 13f));
 
-                Circle circle = mMap.addCircle(new CircleOptions().center(locationXY).radius(RADIUS)
-                        .strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3));
+                Circle circle = mMap.addCircle(new CircleOptions().center(locationXY).radius(RADIUS).strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3));
 
                 /*for(Person p: list){
                     LatLng ParkingLocationXY = new LatLng(p.getLocationX(),p.getLocationY());
@@ -96,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     bottomMap(marker);
                     return false; // + να δείχνει το default info window
                 });
-            }else {
+            } else {
                 Toast.makeText(this, "Ενεργοποίησε το GPS", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MapsActivity.this, BasicMenu.class));
             }
@@ -105,10 +99,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    private void bottomMap(Marker marker){
+    private void bottomMap(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(this);
-        @SuppressLint("InflateParams")
-        View view = LayoutInflater.from(this).inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(this).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);

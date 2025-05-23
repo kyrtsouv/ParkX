@@ -1,24 +1,32 @@
 package com.example.parkx.supabase
 
-import com.example.parkx.NewParkingSpot
-import com.example.parkx.ParkingSpot
+import com.example.parkx.utils.NewParkingSpot
+import com.example.parkx.utils.ParkingSpot
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 object DatabaseService {
 
-    suspend fun getSpots(): List<ParkingSpot> {
-        val response = SupabaseManager.client.from("Parking Spots")
-            .select().decodeList<ParkingSpot>()
+    suspend fun getSpots(lat: Double, long: Double): List<ParkingSpot> {
+        val response = SupabaseManager.client.postgrest.rpc(
+            function = "get_nearby_spots",
+            parameters = buildJsonObject {
+                put("lat", lat)
+                put("long", long)
+                put("radius_meters", 1000)
+            })
+            .decodeList<ParkingSpot>()
 
         return response
     }
 
-    suspend fun createSpot(location: String): String {
+    suspend fun publishSpot(location: String): String {
         val newSpot = NewParkingSpot(location)
-        val response = SupabaseManager.client.from("Parking Spots")
+        SupabaseManager.client.from("Parking Spots")
             .insert(newSpot)
-            .decodeSingle<ParkingSpot>()
 
-        return "Parking spot created with ID: ${response.id}"
+        return "Parking spot created"
     }
 }
