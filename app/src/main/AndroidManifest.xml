@@ -35,6 +35,10 @@
             android:name=".MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
+        <activity android:name=".Requests"
+            android:exported="false"
+            android:label="Requests" />
+
         <activity
             android:name=".BasicMenu"
             android:exported="false"
@@ -48,6 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

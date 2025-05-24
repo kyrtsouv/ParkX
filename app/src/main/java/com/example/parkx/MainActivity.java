@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText email, password;
     Button login;
+    Button register;
 
 
     @Override
@@ -92,7 +93,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MapsActivity.class));
             }*/
         });
+   register= findViewById(R.id.register_button);
+        register.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Requests.class);
+            startActivity(intent);
 
+        });
         textView = findViewById(R.id.error_log);
 
     }
