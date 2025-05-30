@@ -15,10 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BasicMenu extends AppCompatActivity{
 
-    Button searchButton,profile,AddParking;
+    Button searchButton,profile,AddParking,requests_button;
+  FragmentContainerView fragmentContainer;
+
     TextView textView;
     private static final int GPS_REQUEST_CODE = 101;
     private static final int Location_Permission_Code=100;
@@ -30,6 +35,8 @@ public class BasicMenu extends AppCompatActivity{
 
         textView=findViewById(R.id.textView);
         searchButton=findViewById(R.id.Search_button);
+        requests_button=findViewById(R.id.Requests_button);
+        fragmentContainer=findViewById(R.id.requests_container);
 
         searchButton.setOnClickListener(view -> {
             //startActivity(new Intent(BasicMenu.this,MapsActivity.class));
@@ -44,6 +51,22 @@ public class BasicMenu extends AppCompatActivity{
             }
         });
 
+        requests_button.setOnClickListener( view -> {
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// To replace the current fragment with the RequestsFragment
+            transaction.replace(R.id.requests_container, new RequestsFragment());
+
+// Add it to the back stack if you want to allow navigating back
+            transaction.addToBackStack(null);
+
+// Commit the transaction
+            transaction.commit();
+
+
+
+        });
 
     }
 
