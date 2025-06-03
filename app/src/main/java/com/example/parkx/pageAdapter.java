@@ -33,6 +33,8 @@ public class pageAdapter extends FragmentStateAdapter {
                 return new Requests_sent();
             case 1:
                 return new Requests_received();
+            case 2:
+                return new Map_Fragment();
             default:
                 return new Requests_sent(); // fallback
         }
@@ -40,6 +42,6 @@ public class pageAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2; // Total number of pages/tabs
+        return 3; // Total number of pages/tabs
     }
 }
