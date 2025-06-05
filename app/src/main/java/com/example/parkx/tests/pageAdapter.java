@@ -1,22 +1,11 @@
-package com.example.parkx;
+package com.example.parkx.tests;
 
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link pageAdapter#newInstance} factory method to
- * create an instance of this fragment.
- */
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.parkx.MapFragment;
 
 public class pageAdapter extends FragmentStateAdapter {
 
@@ -34,7 +23,7 @@ public class pageAdapter extends FragmentStateAdapter {
             case 1:
                 return new Requests_received();
             case 2:
-                return new Map_Fragment();
+                return new MapFragment();
             default:
                 return new Requests_sent(); // fallback
         }

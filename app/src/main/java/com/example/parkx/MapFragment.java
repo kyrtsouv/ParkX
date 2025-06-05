@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-public class Map_Fragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     @Nullable
@@ -56,7 +56,7 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMapClickListener(latLng ->
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title("Σημείο"+latLng.latitude+" "+latLng.longitude))
+                        .title("Σημείο" + latLng.latitude + " " + latLng.longitude))
         );
         mMap.setOnMarkerClickListener(marker -> {
             bottomMap2(marker);
@@ -64,8 +64,9 @@ public class Map_Fragment extends Fragment implements OnMapReadyCallback {
         });
 
     }
+
     @SuppressLint("SetTextI18n")
-    public void bottomMap2(Marker marker){
+    public void bottomMap2(Marker marker) {
         Log.d("MapFragment", "Marker clicked: " + marker.getTitle());
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams")

@@ -1,4 +1,4 @@
-package com.example.parkx;
+package com.example.parkx.tests;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +8,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.parkx.R;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -25,32 +26,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         this.images = images;
     }
     //Variables storing data to display for this example
-
-
-
-
-    //Class that holds the items to be displayed (Views in card_layout)
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImage;
-        TextView itemTitle;
-        TextView itemDetail;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            itemImage = itemView.findViewById(R.id.item_image);
-            itemTitle = itemView.findViewById(R.id.item_title);
-            itemDetail = itemView.findViewById(R.id.item_detail);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    Snackbar.make(v, "Click detected on item " + position,
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
 
     //Methods that must be implemented for a RecyclerView.Adapter
     @NonNull
@@ -68,10 +43,32 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.itemImage.setImageResource(images.get(position));
     }
 
-
-
     @Override
     public int getItemCount() {
         return titles.size();
+    }
+
+    //Class that holds the items to be displayed (Views in card_layout)
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView itemImage;
+        TextView itemTitle;
+        TextView itemDetail;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemImage = itemView.findViewById(R.id.item_image);
+            itemTitle = itemView.findViewById(R.id.item_title);
+            itemDetail = itemView.findViewById(R.id.item_detail);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+
+                    Snackbar.make(v, "Click detected on item " + position,
+                            Snackbar.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

@@ -1,18 +1,24 @@
 <resources>
     <string name="app_name">ParkX</string>
     <string name="title_activity_maps">MapsActivity</string>
-    <string name="button">Button</string>
-    <string name="email">email</string>
-    <string name="password">password</string>
-    <string name="register">Register</string>
-    <string name="login"> login </string>
-    <string name="welcome_to_parkx">Welcome to PARKX! Please login or if you don\'t have an account register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="welcome_to_parkx">Welcome to PARKX!</string>
     <string name="title_activity_menu">title_activity_menu\n</string>
     <string name="item_title">Item_title</string>
     <string name="item_detail">Item_detail</string>
     <string name="item_image_description">Item_image_description</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="name">name</string>
-    <string name="surname">surname</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="you_don_t_have_an_account">You don\'t have an account?</string>
+    <string name="sign_up_here">Sign Up here!</string>
+    <string name="sign_in_here">Sign In here!</string>
+    <string name="you_already_have_an_account">You already have an account?</string>
+    <string name="please_fill_in_all_fields">Please fill in all fields.</string>
+    <string name="search">Search</string>
+    <string name="post">Post</string>
+    <string name="profile">Profile</string>
 </resources>

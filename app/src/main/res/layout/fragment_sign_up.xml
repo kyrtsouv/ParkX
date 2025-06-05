@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpFragment">
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="211dp"
+        android:layout_height="48dp"
+        android:layout_marginVertical="8dp"
+        android:autofillHints="name"
+        android:ems="10"
+        android:gravity="start|center_vertical"
+        android:hint="@string/name"
+        android:inputType="textPersonName"
+
+        android:saveEnabled="false"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/et_surname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/et_surname"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginVertical="8dp"
+        android:autofillHints="familyName"
+        android:ems="10"
+        android:gravity="start|center_vertical"
+        android:hint="@string/surname"
+        android:inputType="textPersonName"
+
+        android:saveEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/et_signUpEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+
+    <EditText
+        android:id="@+id/et_signUpEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginVertical="8dp"
+        android:autofillHints="emailAddress"
+        android:ems="10"
+        android:gravity="start|center_vertical"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+
+
+        android:saveEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/et_signUpPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_surname" />
+
+    <EditText
+        android:id="@+id/et_signUpPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginVertical="8dp"
+        android:autofillHints="password"
+        android:ems="10"
+        android:gravity="start|center_vertical"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+
+        android:saveEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/tv_signUpError"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_signUpEmail" />
+
+    <TextView
+        android:id="@+id/tv_signUpError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:gravity="center"
+        android:minHeight="24dp"
+
+        android:textColor="#FF0000"
+        app:layout_constraintBottom_toTopOf="@+id/btn_signUp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_signUpPassword" />
+
+    <Button
+        android:id="@+id/btn_signUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:text="@string/sign_up"
+
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_signUpError" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/you_already_have_an_account"
+        app:layout_constraintBottom_toTopOf="@+id/tv_goToSignIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_goToSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:onClick="goToSignIn"
+        android:text="@string/sign_in_here"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

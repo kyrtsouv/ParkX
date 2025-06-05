@@ -1,12 +1,9 @@
-package com.example.parkx;
+package com.example.parkx.tests;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,29 +11,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 
-public class BasicMenu extends AppCompatActivity{
+import com.example.parkx.R;
 
-    Button searchButton,profile,AddParking,requests_button;
-  FragmentContainerView fragmentContainer;
+public class BasicMenu extends AppCompatActivity {
 
-    TextView textView;
     private static final int GPS_REQUEST_CODE = 101;
-    private static final int Location_Permission_Code=100;
+    private static final int Location_Permission_Code = 100;
+    Button searchButton, profile, AddParking, requests_button;
+    FragmentContainerView fragmentContainer;
+    TextView textView;
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        textView=findViewById(R.id.textView);
-        searchButton=findViewById(R.id.Search_button);
-        requests_button=findViewById(R.id.Requests_button);
-        fragmentContainer=findViewById(R.id.requests_container);
+        textView = findViewById(R.id.textView);
+        searchButton = findViewById(R.id.Search_button);
+        requests_button = findViewById(R.id.Requests_button);
+        fragmentContainer = findViewById(R.id.requests_container);
 
         searchButton.setOnClickListener(view -> {
             //startActivity(new Intent(BasicMenu.this,MapsActivity.class));
@@ -51,7 +47,7 @@ public class BasicMenu extends AppCompatActivity{
             }
         });
 
-        requests_button.setOnClickListener( view -> {
+        requests_button.setOnClickListener(view -> {
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -63,7 +59,6 @@ public class BasicMenu extends AppCompatActivity{
 
 // Commit the transaction
             transaction.commit();
-
 
 
         });

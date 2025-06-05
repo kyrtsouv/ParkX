@@ -8,12 +8,14 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import java.time.LocalDateTime
 
 
 object SupabaseManager {
     lateinit var client: SupabaseClient
         private set
 
+    @JvmStatic
     fun init() {
         client = createSupabaseClient(
             supabaseUrl = "https://pymrbdesqdzscvaewbjz.supabase.co",
@@ -22,16 +24,15 @@ object SupabaseManager {
             install(Auth)
             install(Postgrest)
         }
-
     }
 
     @JvmStatic
-    fun signIn(email: String, password: String, callback: JavaResultCallback<String>) {
+    fun signIn(email: String, password: String, callback: JavaResultCallback<Unit>) {
         CoroutineExecutor.runSuspend({ AuthService.signIn(email, password) }, callback)
     }
 
     @JvmStatic
-    fun signUp(email: String, password: String, callback: JavaResultCallback<String>) {
+    fun signUp(email: String, password: String, callback: JavaResultCallback<Unit>) {
         CoroutineExecutor.runSuspend({ AuthService.signUp(email, password) }, callback)
     }
 
@@ -44,14 +45,27 @@ object SupabaseManager {
 
 
     @JvmStatic
-    fun getSpots(lat: Double, long: Double, callback: JavaResultCallback<List<ParkingSpot>>) {
-        CoroutineExecutor.runSuspend({ DatabaseService.getSpots(lat, long) }, callback)
+    fun getSpots(
+        latitude: Double,
+        longitude: Double,
+        targetTime: LocalDateTime,
+        callback: JavaResultCallback<List<ParkingSpot>>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.getSpots(latitude, longitude, targetTime) },
+            callback
+        )
     }
 
     @JvmStatic
-    fun publishSpot(location: String, callback: JavaResultCallback<String>) {
+    fun publishSpot(
+        latitude: Double,
+        longitude: Double,
+        localDateTime: LocalDateTime,
+        callback: JavaResultCallback<String>
+    ) {
         CoroutineExecutor.runSuspend(
-            { DatabaseService.publishSpot(location) }, callback
+            { DatabaseService.publishSpot(latitude, longitude, localDateTime) }, callback
         )
     }
 

@@ -52,13 +52,13 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation(platform(libs.bom))
+    implementation(libs.postgrest.kt)
+    implementation(libs.auth.kt)
 
-    implementation("io.ktor:ktor-client-okhttp:3.1.3")
+    implementation(libs.ktor.client.okhttp)
 
     //implemantation for google map service
-    implementation ("com.google.android.gms:play-services-maps:18.2.0")
-    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 }
