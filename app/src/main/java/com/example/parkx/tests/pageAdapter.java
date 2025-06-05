@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.parkx.MapFragment;
+import com.example.parkx.Post_MapFragment;
 
 public class pageAdapter extends FragmentStateAdapter {
 
@@ -23,7 +23,7 @@ public class pageAdapter extends FragmentStateAdapter {
             case 1:
                 return new Requests_received();
             case 2:
-                return new MapFragment();
+                return new Post_MapFragment();
             default:
                 return new Requests_sent(); // fallback
         }
