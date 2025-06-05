@@ -32,8 +32,17 @@ object SupabaseManager {
     }
 
     @JvmStatic
-    fun signUp(email: String, password: String, callback: JavaResultCallback<Unit>) {
-        CoroutineExecutor.runSuspend({ AuthService.signUp(email, password) }, callback)
+    fun signUp(
+        email: String,
+        password: String,
+        name: String,
+        surname: String,
+        callback: JavaResultCallback<Unit>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { AuthService.signUp(email, password, name, surname) },
+            callback
+        )
     }
 
     @JvmStatic

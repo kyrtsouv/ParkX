@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
         SupabaseManager.init();
 
         ftMan = getSupportFragmentManager();
-
-
     }
 
     public void goToSignIn(View view) {

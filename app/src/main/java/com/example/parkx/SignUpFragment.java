@@ -85,7 +85,7 @@ public class SignUpFragment extends Fragment {
 
         tv_signUpError.setText("");
 
-        SupabaseManager.signUp("anothertest@email.com", "password", new JavaResultCallback<>() {
+        SupabaseManager.signUp("anothertest@email.com", "password", name, surname, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
 

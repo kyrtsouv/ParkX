@@ -19,8 +19,9 @@ object DatabaseService {
     suspend fun getSpots(
         latitude: Double,
         longitude: Double,
-        targetTime: LocalDateTime
+        targetTime: LocalDateTime = LocalDateTime.now()
     ): List<ParkingSpot> {
+
         val response = SupabaseManager.client.postgrest.rpc(
             function = "get_nearby_spots",
             parameters = buildJsonObject {
