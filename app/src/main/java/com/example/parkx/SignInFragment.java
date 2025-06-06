@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,8 @@ public class SignInFragment extends Fragment {
     EditText et_signInPassword;
 
     TextView tv_signInError;
+    Button btn_signIn;
+    ProgressBar progressBar;
 
 
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -45,6 +49,8 @@ public class SignInFragment extends Fragment {
         et_signInEmail = view.findViewById(R.id.et_signInEmail);
         et_signInPassword = view.findViewById(R.id.et_signInPassword);
         tv_signInError = view.findViewById(R.id.tv_signInError);
+        btn_signIn= view.findViewById(R.id.btn_signIn);
+        progressBar=view.findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
             et_signInEmail.setText(savedInstanceState.getString("email", ""));
@@ -52,14 +58,18 @@ public class SignInFragment extends Fragment {
             tv_signInError.setText(savedInstanceState.getString("error", ""));
         }
 
-        view.findViewById(R.id.btn_signIn).setOnClickListener(v -> SignIn());
+        btn_signIn.setOnClickListener(v -> SignIn());
 
     }
 
+
     public void SignIn() {
 
+        View view = getView();
         String email = et_signInEmail.getText().toString();
         String password = et_signInPassword.getText().toString();
+        btn_signIn.setEnabled(false);
+        progressBar.setVisibility(view.VISIBLE);
 
         boolean debug = true;
         if (debug) {
@@ -69,22 +79,30 @@ public class SignInFragment extends Fragment {
 
         if (email.isEmpty() || password.isEmpty()) {
             tv_signInError.setText(R.string.please_fill_in_all_fields);
+            btn_signIn.setEnabled(true);
             return;
         }
+
 
         tv_signInError.setText("");
 
         SupabaseManager.signIn(email, password, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
+                btn_signIn.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).goToHome();
+
                 }
+
             }
 
             @Override
             public void onError(@NotNull Throwable exception) {
+                btn_signIn.setEnabled(true);
                 tv_signInError.setText(exception.getMessage());
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

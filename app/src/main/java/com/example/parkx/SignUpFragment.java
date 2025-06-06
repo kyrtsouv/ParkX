@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,8 @@ public class SignUpFragment extends Fragment {
     EditText et_signUpEmail;
     EditText et_signUpPassword;
     TextView tv_signUpError;
+    ProgressBar progressBar;
+    Button btn_signUp;
 
     public SignUpFragment() {
     }
@@ -58,6 +62,8 @@ public class SignUpFragment extends Fragment {
         et_signUpEmail = view.findViewById(R.id.et_signUpEmail);
         et_signUpPassword = view.findViewById(R.id.et_signUpPassword);
         tv_signUpError = view.findViewById(R.id.tv_signUpError);
+        btn_signUp=view.findViewById(R.id.btn_signUp);
+        progressBar = view.findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
             et_name.setText(savedInstanceState.getString("name", ""));
@@ -67,32 +73,40 @@ public class SignUpFragment extends Fragment {
             tv_signUpError.setText(savedInstanceState.getString("error", ""));
         }
 
-        view.findViewById(R.id.btn_signUp).setOnClickListener(v -> SignUp());
+        btn_signUp.setOnClickListener(v -> SignUp());
 
     }
 
     public void SignUp() {
 
+        progressBar.setVisibility(View.VISIBLE);
+        btn_signUp.setEnabled(false);
         String name = et_name.getText().toString();
         String surname = et_surname.getText().toString();
         String email = et_signUpEmail.getText().toString();
         String password = et_signUpPassword.getText().toString();
 
         if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            btn_signUp.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
             tv_signUpError.setText(R.string.please_fill_in_all_fields);
             return;
         }
 
         tv_signUpError.setText("");
 
-        SupabaseManager.signUp("anothertest@email.com", "password", name, surname, new JavaResultCallback<>() {
+        SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
+                btn_signUp.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
 
             }
 
             @Override
             public void onError(@NotNull Throwable exception) {
+                btn_signUp.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
                 String result = exception.toString();
                 tv_signUpError.setText(result);
             }
