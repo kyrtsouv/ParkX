@@ -22,4 +22,10 @@
     <string name="post">Post</string>
     <string name="profile">Profile</string>
     <string name="Mail_validation_request">Please enter a valid email address.</string>
+    <string name="invalid_credentials">Invalid email or password</string>
+    <string name="authRest_generic_error">"An error occurred: "</string>
+    <string name="network_error">Network error. Please check your internet connection.</string>
+    <string name="generic_error">"Unexpected error: "</string>
+    <string name="email_already_in_use">This email is in use. Please choose a different one</string>
+    <string name="not_valid_email">Please enter a valid Email</string>
 </resources>

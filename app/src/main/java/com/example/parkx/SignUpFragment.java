@@ -17,6 +17,9 @@ import com.example.parkx.utils.JavaResultCallback;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
+import io.github.jan.supabase.auth.exception.AuthRestException;
 import kotlin.Unit;
 
 public class SignUpFragment extends Fragment {
@@ -62,7 +65,7 @@ public class SignUpFragment extends Fragment {
         et_signUpEmail = view.findViewById(R.id.et_signUpEmail);
         et_signUpPassword = view.findViewById(R.id.et_signUpPassword);
         tv_signUpError = view.findViewById(R.id.tv_signUpError);
-        btn_signUp=view.findViewById(R.id.btn_signUp);
+        btn_signUp = view.findViewById(R.id.btn_signUp);
         progressBar = view.findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
@@ -92,26 +95,66 @@ public class SignUpFragment extends Fragment {
             tv_signUpError.setText(R.string.please_fill_in_all_fields);
             return;
         }
+        if (!isValidEmail(email)) {
+            btn_signUp.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
+            tv_signUpError.setText(R.string.not_valid_email);
+            return;
+
+        }
 
         tv_signUpError.setText("");
 
         SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
-            @Override
-            public void onSuccess(@NotNull Unit value) {
-                btn_signUp.setEnabled(true);
-                progressBar.setVisibility(View.GONE);
+                    @Override
+                    public void onSuccess(@NotNull Unit value) {
+                        btn_signUp.setEnabled(true);
+                        progressBar.setVisibility(View.GONE);
 
-            }
+                    }
 
-            @Override
-            public void onError(@NotNull Throwable exception) {
-                btn_signUp.setEnabled(true);
-                progressBar.setVisibility(View.GONE);
-                String result = exception.toString();
-                tv_signUpError.setText(result);
-            }
-        });
+                    @Override
+                    public void onError(@NotNull Throwable exception) {
+                        btn_signUp.setEnabled(true);
+                        progressBar.setVisibility(View.GONE);
+
+
+                        if (exception instanceof AuthRestException) {
+                            AuthRestException authRestException = (AuthRestException) exception;
+                            String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
+                            String errorMessage = authRestException.getMessage();
+
+                            switch (errorCode) {
+                                case "UserAlreadyExists":
+                                    tv_signUpError.setText(R.string.email_already_in_use);
+                                    break;
+
+                                default:
+                                    tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
+                            }
+
+
+                        } else if (exception instanceof IOException) {
+                            // IOException indicates network issues (e.g., no internet connection)
+                            tv_signUpError.setText(R.string.network_error);
+                        } else {
+                            // General error handling for other types of exceptions
+                            tv_signUpError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
+                        }
+
+
+                    }
+                }
+
+        );
     }
 
+    public static boolean isValidEmail(String email) {
+        // Simple regex for email validation
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+        // Use String's matches() method to check if the email matches the regex
+        return email.matches(emailRegex);
+    }
 
 }

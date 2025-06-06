@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -17,11 +18,19 @@ import com.example.parkx.utils.JavaResultCallback;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+
+import io.github.jan.supabase.auth.GoTrueErrorResponse;
+import io.github.jan.supabase.auth.exception.AuthRestException;
 import kotlin.Unit;
+
 
 public class SignInFragment extends Fragment {
 
     EditText et_signInEmail;
+
     EditText et_signInPassword;
 
     TextView tv_signInError;
@@ -49,8 +58,8 @@ public class SignInFragment extends Fragment {
         et_signInEmail = view.findViewById(R.id.et_signInEmail);
         et_signInPassword = view.findViewById(R.id.et_signInPassword);
         tv_signInError = view.findViewById(R.id.tv_signInError);
-        btn_signIn= view.findViewById(R.id.btn_signIn);
-        progressBar=view.findViewById(R.id.progressBar);
+        btn_signIn = view.findViewById(R.id.btn_signIn);
+        progressBar = view.findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
             et_signInEmail.setText(savedInstanceState.getString("email", ""));
@@ -103,6 +112,31 @@ public class SignInFragment extends Fragment {
                 btn_signIn.setEnabled(true);
                 tv_signInError.setText(exception.getMessage());
                 progressBar.setVisibility(View.GONE);
+
+
+                if (exception instanceof AuthRestException) {
+                    AuthRestException authRestException = (AuthRestException) exception;
+                    String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
+                    String errorMessage = authRestException.getMessage();
+
+                    switch (errorCode) {
+                        case "InvalidCredentials":
+                            tv_signInError.setText(R.string.invalid_credentials);
+                            break;
+
+                        default:
+                            tv_signInError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
+                    }
+
+
+                } else if (exception instanceof IOException) {
+                    // IOException indicates network issues (e.g., no internet connection)
+                    tv_signInError.setText(R.string.network_error);
+                } else {
+                    // General error handling for other types of exceptions
+                    tv_signInError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
+                }
+
             }
         });
     }
