@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.parkx.supabase.DatabaseService;
 import com.example.parkx.supabase.SupabaseManager;
 import com.example.parkx.utils.JavaResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -78,6 +79,8 @@ public class Post_MapFragment extends Fragment implements OnMapReadyCallback {
             return false;
         });
 
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -96,7 +99,7 @@ public class Post_MapFragment extends Fragment implements OnMapReadyCallback {
             bottomDialog.dismiss();
             LatLng temp = marker.getPosition();
 
-            /// δεν ξερω αν λειτουργεί σωστά ως προς τη βάση , κοίτα LocalDateTime
+             /// δεν ξερω αν λειτουργεί σωστά ως προς τη βάση , κοίτα LocalDateTime
             SupabaseManager.publishSpot(temp.latitude, temp.longitude, new LocalDateTime(java.time.LocalDateTime.now()).getValue$kotlinx_datetime(), new JavaResultCallback<String>() {
                 @Override
                 public void onSuccess(String value) {

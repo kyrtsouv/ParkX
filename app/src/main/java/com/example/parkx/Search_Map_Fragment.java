@@ -21,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,7 +35,7 @@ import kotlinx.datetime.LocalDateTime;
 
 public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private Marker marker_M = null;
+    private Marker marker_M = null,marker_P=null;
     private Circle circle = null;
     private final int RADIUS = 1000;//ακτινα κυκλου γύρο από το χρηστη
 
@@ -65,21 +66,59 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
 
         ///απομακρυνει το προηγουμενο Marker και φτιαχνει νεο με τις καινουργιες συντεταγμενες
         mMap.setOnMapClickListener(latLng -> {
-            if (marker_M != null) {
+            if (marker_M != null)
                 marker_M.remove();
-            }
+
+            if (circle != null)
+                circle.remove();
             marker_M = mMap.addMarker(new MarkerOptions().position(latLng)
                     .title("Σημείο προς Αναζήτηση?"));
         });
 
         mMap.setOnMarkerClickListener(marker -> {
-            bottomMap(marker);
+            if(marker.equals(marker_M))
+                bottomMapSearch(marker);
+            else if(marker.equals(marker_P))
+                bottomMapParking(marker);
             return false;
         });
+
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().isRotateGesturesEnabled();
+    }
+
+    private void checkParking(Marker marker) {
+        LatLng temp = marker.getPosition();
+
+        circle = mMap.addCircle(new CircleOptions().center(temp).radius(RADIUS)
+                .strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3));
+
+        /// λειτουργεί σωστά ως προς τη βάση
+        SupabaseManager.getSpots(temp.latitude, temp.longitude, new LocalDateTime(java.time.LocalDateTime.now()).getValue$kotlinx_datetime(), new JavaResultCallback<List<ParkingSpot>>() {
+            @Override
+            public void onSuccess(List<ParkingSpot> value) {
+                for (ParkingSpot p : value) {
+                    LatLng ParkingLocationXY = new LatLng(p.getLatitude(), p.getLongitude());
+                    MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
+                            .title("Ελεύθερη Θέση Πάρκινγκ" )
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+                    marker_P = mMap.addMarker(ParkingMarker);
+                    double distance = DistanceBetween(marker.getPosition(), ParkingMarker.getPosition());
+                    assert marker_P != null;
+                    marker_P.setVisible(distance < RADIUS);
+                }
+            }
+            @Override
+            public void onError(@NonNull Throwable exception) {
+                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @SuppressLint("SetTextI18n")
-    private void bottomMap(Marker marker) {
+    private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams")
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
@@ -94,46 +133,36 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
             Toast.makeText(getContext(), "Αναζήτηση ... Παρακαλώ Περιμένετε",
                     Toast.LENGTH_SHORT).show();
             checkParking(marker);
+
         });
 
         bottomDialog.setContentView(view);
         bottomDialog.show();
     }
 
-    private void checkParking(Marker marker) {
-        LatLng temp = marker.getPosition();
-        if (circle != null)
+    @SuppressLint("SetTextI18n")
+    private void bottomMapParking(Marker marker) {
+        BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
+        @SuppressLint("InflateParams")
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
+
+        TextView title = view.findViewById(R.id.textView_MAP);
+        Button actionButton = view.findViewById(R.id.button_MAP);
+
+        title.setText(marker.getTitle());
+        actionButton.setText("Σύζευξη");
+        actionButton.setOnClickListener(v -> {
+            bottomDialog.dismiss();
+            Toast.makeText(getContext(), "Εστάλει Αίτημα Σύζευξης",
+                    Toast.LENGTH_SHORT).show();
+            marker_M.remove();
             circle.remove();
-        circle = mMap.addCircle(new CircleOptions().center(temp).radius(RADIUS)
-                .strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3));
-
-        /// δεν ξερω αν λειτουργεί σωστά ως προς τη βάση , κοίτα LocalDateTime
-        SupabaseManager.getSpots(temp.latitude, temp.longitude, new LocalDateTime(java.time.LocalDateTime.now()).getValue$kotlinx_datetime(), new JavaResultCallback<List<ParkingSpot>>() {
-            @Override
-            public void onSuccess(List<ParkingSpot> value) {
-                for (ParkingSpot p : value) {
-                    LatLng ParkingLocationXY = new LatLng(p.getLatitude(), p.getLongitude());
-                    MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
-                            .title(p.getUserId() + " Location : X= " + p.getLatitude() + ", Y= " + p.getLongitude());
-
-                    marker_M = mMap.addMarker(ParkingMarker);
-                    double distance = DistanceBetween(marker.getPosition(), ParkingMarker.getPosition());
-                    //double distance = SphericalUtil.computeDistanceBetween(locationXY, ParkingLocationXY);
-                    assert marker_M != null;
-                    marker_M.setVisible(distance < RADIUS);
-                }
-
-            }
-
-            @Override
-            public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
-            }
+            /// πρεπει να στελνετε ειδοποιηση για τη θεση παρκινγκ
         });
 
-
+        bottomDialog.setContentView(view);
+        bottomDialog.show();
     }
-
     public static double DistanceBetween(LatLng point1, LatLng point2) {
         final int R = 6371000; // ακτίνα της Γης σε μέτρα
 
