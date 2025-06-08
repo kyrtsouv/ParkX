@@ -49,10 +49,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationProvider = LocationServices.getFusedLocationProviderClient(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_fragment);
         assert mapFragment != null;
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.map_fragment, mapFragment)
+                .commit();
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,9 @@ public class Post_MapFragment extends Fragment implements OnMapReadyCallback {
                 .commit();
 
         mapFragment.getMapAsync(this);
+
+        ImageButton btnSettings = view.findViewById(R.id.btnSettings);
+        btnSettings.setVisibility(View.INVISIBLE);
 
         return view;
     }
@@ -99,7 +103,7 @@ public class Post_MapFragment extends Fragment implements OnMapReadyCallback {
             bottomDialog.dismiss();
             LatLng temp = marker.getPosition();
 
-             /// δεν ξερω αν λειτουργεί σωστά ως προς τη βάση , κοίτα LocalDateTime
+            /// δεν ξερω αν λειτουργεί σωστά ως προς τη βάση , κοίτα LocalDateTime
             SupabaseManager.publishSpot(temp.latitude, temp.longitude, new LocalDateTime(java.time.LocalDateTime.now()).getValue$kotlinx_datetime(), new JavaResultCallback<String>() {
                 @Override
                 public void onSuccess(String value) {

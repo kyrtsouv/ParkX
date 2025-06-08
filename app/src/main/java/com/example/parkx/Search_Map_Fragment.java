@@ -1,12 +1,18 @@
 package com.example.parkx;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,9 +41,14 @@ import kotlinx.datetime.LocalDateTime;
 
 public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private Marker marker_M = null,marker_P=null;
+    private ImageButton btnSettings;
+    private Marker marker_M = null, marker_P = null;
     private Circle circle = null;
-    private final int RADIUS = 1000;//ακτινα κυκλου γύρο από το χρηστη
+    private int RADIUS = 1000;//ακτινα κυκλου γύρο από το χρηστη
+
+    public Search_Map_Fragment() {
+        // Required empty public constructor
+    }
 
     @Nullable
     @Override
@@ -53,6 +64,13 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
                 .commit();
 
         mapFragment.getMapAsync(this);
+
+        btnSettings = view.findViewById(R.id.btnSettings);
+        //btnSettings.setVisibility(View.VISIBLE);
+        btnSettings.setOnClickListener(v -> {
+            Log.d("mytag", "btn is pressed");
+            showDialog();
+        });
 
         return view;
     }
@@ -76,9 +94,9 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
         });
 
         mMap.setOnMarkerClickListener(marker -> {
-            if(marker.equals(marker_M))
+            if (marker.equals(marker_M))
                 bottomMapSearch(marker);
-            else if(marker.equals(marker_P))
+            else if (marker.equals(marker_P))
                 bottomMapParking(marker);
             return false;
         });
@@ -100,7 +118,7 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
                 for (ParkingSpot p : value) {
                     LatLng ParkingLocationXY = new LatLng(p.getLatitude(), p.getLongitude());
                     MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
-                            .title("Ελεύθερη Θέση Πάρκινγκ" )
+                            .title("Ελεύθερη Θέση Πάρκινγκ")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
                     marker_P = mMap.addMarker(ParkingMarker);
@@ -109,6 +127,7 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
                     marker_P.setVisible(distance < RADIUS);
                 }
             }
+
             @Override
             public void onError(@NonNull Throwable exception) {
                 Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
@@ -163,6 +182,7 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
         bottomDialog.setContentView(view);
         bottomDialog.show();
     }
+
     public static double DistanceBetween(LatLng point1, LatLng point2) {
         final int R = 6371000; // ακτίνα της Γης σε μέτρα
 
@@ -180,5 +200,34 @@ public class Search_Map_Fragment extends Fragment implements OnMapReadyCallback 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return R * c; // επιστρέφει την απόσταση σε μέτρα
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void showDialog() {
+        final Dialog dialog = new Dialog(requireContext());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(true);
+
+        dialog.setContentView(R.layout.dialog_radius);
+
+        final EditText number = dialog.findViewById(R.id.inputNumber);
+        final Button btn = dialog.findViewById(R.id.OK);
+
+        btn.setOnClickListener(view -> {
+            Log.d("mytag", "btn is pressed");
+            try {
+                RADIUS = Integer.parseInt(number.getText().toString());
+                Toast.makeText(requireContext(), "Αλλαγή ακτίνας σε " + number
+                        .getText().toString() + "m", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException ignored) {
+            }
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
+
     }
 }
