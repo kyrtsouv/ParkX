@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -19,10 +18,7 @@ import com.example.parkx.utils.JavaResultCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 
-import io.github.jan.supabase.auth.GoTrueErrorResponse;
 import io.github.jan.supabase.auth.exception.AuthRestException;
 import kotlin.Unit;
 
@@ -89,6 +85,7 @@ public class SignInFragment extends Fragment {
         if (email.isEmpty() || password.isEmpty()) {
             tv_signInError.setText(R.string.please_fill_in_all_fields);
             btn_signIn.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
             return;
         }
 
@@ -98,7 +95,7 @@ public class SignInFragment extends Fragment {
         SupabaseManager.signIn(email, password, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
-                btn_signIn.setEnabled(true);
+//                btn_signIn.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).goToHome();

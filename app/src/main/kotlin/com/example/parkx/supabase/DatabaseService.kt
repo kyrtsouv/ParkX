@@ -19,7 +19,7 @@ object DatabaseService {
     suspend fun getSpots(
         latitude: Double,
         longitude: Double,
-        targetTime: LocalDateTime = LocalDateTime.now()
+        targetTime: LocalDateTime
     ): List<ParkingSpot> {
 
         val response = SupabaseManager.client.postgrest.rpc(
