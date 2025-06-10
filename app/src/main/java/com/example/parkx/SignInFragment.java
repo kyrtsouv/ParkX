@@ -70,11 +70,11 @@ public class SignInFragment extends Fragment {
 
     public void SignIn() {
 
-        View view = getView();
+
         String email = et_signInEmail.getText().toString();
         String password = et_signInPassword.getText().toString();
         btn_signIn.setEnabled(false);
-        progressBar.setVisibility(view.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         boolean debug = true;
         if (debug) {

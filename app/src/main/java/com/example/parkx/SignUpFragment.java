@@ -108,7 +108,7 @@ public class SignUpFragment extends Fragment {
         SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
                     @Override
                     public void onSuccess(@NotNull Unit value) {
-                        btn_signUp.setEnabled(true);
+
                         progressBar.setVisibility(View.GONE);
 
                     }
