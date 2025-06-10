@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.parkx.pageAdapter;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class RequestsFragment extends Fragment {
 
@@ -32,14 +34,26 @@ public class RequestsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        viewPager = view.findViewById(R.id.viewP);
-//        tabLayout = view.findViewById(R.id.tab);
-//
-//        pageAdapter adapter = new pageAdapter(requireActivity()); // FragmentActivity required
-//        viewPager.setAdapter(adapter);
-//
-//        new TabLayoutMediator(tabLayout, viewPager,
-//                (tab, position) -> tab.setText(position == 0 ? "Sent" : "Received")
-//        ).attach();
+       viewPager = view.findViewById(R.id.viewP);
+        tabLayout = view.findViewById(R.id.tab);
+
+        pageAdapter adapter = new pageAdapter(requireActivity()); // FragmentActivity required
+        viewPager.setAdapter(adapter);
+
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText("Sent");
+                            break;
+                        case 1:
+                            tab.setText("Received");
+                            break;
+                        case 2:
+                            tab.setText("Parking spots"); // Change this label as needed
+                            break;
+                    }
+                }
+        ).attach();
     }
 }
