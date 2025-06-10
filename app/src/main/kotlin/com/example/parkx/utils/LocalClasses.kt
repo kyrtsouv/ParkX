@@ -30,9 +30,7 @@ data class ParkingSpot(
 
 @Serializable
 data class NewRequest(
-    @SerialName("parking_spot_id") val parkingSpotId: Int,
-    @SerialName("owner_id") val ownerId: String,
-    @SerialName("requester_id") val requesterId: String,
+    @SerialName("parking_spot_id") val parkingSpotId: Int
 )
 
 @Serializable

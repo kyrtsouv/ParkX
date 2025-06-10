@@ -3,27 +3,23 @@
     android:id="@+id/bottom_map"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical"
-    android:padding="32dp"
-    android:background="@android:color/white">
+    android:padding="32dp">
 
     <TextView
         android:id="@+id/textView_MAP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="12dp"
         android:text="Τίτλος Marker"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:paddingBottom="12dp" />
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/button_MAP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_blue_dark"
-        android:text="Αίτηση Σύζευξης"
-        android:textColor="@android:color/white" />
-
-
+        android:text="Αίτηση Σύζευξης" />
 </LinearLayout>

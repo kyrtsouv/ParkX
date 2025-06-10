@@ -110,7 +110,9 @@ public class SignUpFragment extends Fragment {
                     public void onSuccess(@NotNull Unit value) {
 
                         progressBar.setVisibility(View.GONE);
-
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).goToHome();
+                        }
                     }
 
                     @Override

@@ -1,7 +1,10 @@
 package com.example.parkx.supabase
 
 import com.example.parkx.utils.NewParkingSpot
+import com.example.parkx.utils.NewRequest
 import com.example.parkx.utils.ParkingSpot
+import com.example.parkx.utils.Request
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.datetime.toKotlinInstant
@@ -49,5 +52,42 @@ object DatabaseService {
             .insert(newSpot)
 
         return "Parking spot created"
+    }
+
+    suspend fun addRequest(
+        parkingSpotId: Int
+    ): String {
+        val newRequest = NewRequest(parkingSpotId = parkingSpotId)
+        SupabaseManager.client.from("Requests")
+            .insert(newRequest)
+
+        return "Request added"
+    }
+
+    suspend fun getRequestsSent(): List<Request> {
+        return SupabaseManager.client.from("Requests")
+            .select() {
+                filter {
+                    eq("requester_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
+                }
+            }.decodeList<Request>()
+    }
+
+    suspend fun getRequestsReceived(): List<Request> {
+        return SupabaseManager.client.from("Requests")
+            .select() {
+                filter {
+                    eq("owner_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
+                }
+            }.decodeList<Request>()
+    }
+
+    suspend fun getMyParkingSpots(): List<ParkingSpot> {
+        return SupabaseManager.client.from("Parking Spots")
+            .select() {
+                filter {
+                    eq("user_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
+                }
+            }.decodeList<ParkingSpot>()
     }
 }

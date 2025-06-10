@@ -3,17 +3,20 @@ package com.example.parkx.supabase
 import com.example.parkx.utils.CoroutineExecutor
 import com.example.parkx.utils.JavaResultCallback
 import com.example.parkx.utils.ParkingSpot
+import com.example.parkx.utils.Request
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.serialization.json.JsonObject
 import java.time.LocalDateTime
 
 
 object SupabaseManager {
     lateinit var client: SupabaseClient
         private set
+
 
     @JvmStatic
     fun init() {
@@ -79,8 +82,45 @@ object SupabaseManager {
     }
 
     @JvmStatic
-    fun getMetadata(): String {
+    fun addRequest(
+        parkingSpotId: Int,
+        callback: JavaResultCallback<String>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.addRequest(parkingSpotId) }, callback
+        )
+    }
+
+    @JvmStatic
+    fun getRequestsSent(
+        callback: JavaResultCallback<List<Request>>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.getRequestsSent() }, callback
+        )
+    }
+
+    @JvmStatic
+    fun getRequestsReceived(
+        callback: JavaResultCallback<List<Request>>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.getRequestsReceived() }, callback
+        )
+    }
+
+    @JvmStatic
+    fun getMyParkingSpots(
+        callback: JavaResultCallback<List<ParkingSpot>>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.getMyParkingSpots() }, callback
+        )
+    }
+
+    @JvmStatic
+    fun getMetadata(): JsonObject? {
         val metadata = client.auth.currentUserOrNull()?.userMetadata
-        return metadata.toString()
+        return metadata
     }
 }
