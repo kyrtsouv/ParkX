@@ -41,8 +41,8 @@ public class Requests_sent extends Fragment {
 
                 for (Request request : value) {
 
-                    String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() + " " +
-                            " has requested your spot at coordinates : ";
+                    String title = "You have requested user's " + request.getOwnerName() + " " + request.getOwnerSurname() + " " +
+                            "spot at coordinates:";
 
                     titles.add(title);
 
