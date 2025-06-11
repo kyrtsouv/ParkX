@@ -40,9 +40,16 @@ public class Requests_sent extends Fragment {
                 List<Integer> images = new ArrayList<>();
 
                 for (Request request : value) {
-                    titles.add(request.getStatus().toString());
-                    details.add(String.valueOf(request.getId()));
+
+                    String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() + " " +
+                            " has requested your spot at coordinates : ";
+
+                    titles.add(title);
+
+                    String detail = String.format("%.5f %.5f", request.getLatitude(), request.getLongitude());
+                    details.add(detail);
                     switch (request.getStatus()) {
+
                         case ACCEPTED:
                             images.add(R.drawable.checkmark_svgrepo_com);
                             break;
