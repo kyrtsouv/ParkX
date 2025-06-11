@@ -26,9 +26,7 @@ import kotlin.Unit;
 public class SignInFragment extends Fragment {
 
     EditText et_signInEmail;
-
     EditText et_signInPassword;
-
     TextView tv_signInError;
     Button btn_signIn;
     ProgressBar progressBar;
@@ -99,33 +97,22 @@ public class SignInFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).goToHome();
-
                 }
-
             }
 
             @Override
             public void onError(@NotNull Throwable exception) {
                 btn_signIn.setEnabled(true);
-                tv_signInError.setText(exception.getMessage());
                 progressBar.setVisibility(View.GONE);
-
 
                 if (exception instanceof AuthRestException) {
                     AuthRestException authRestException = (AuthRestException) exception;
                     String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
-                    String errorMessage = authRestException.getMessage();
-
-                    switch (errorCode) {
-                        case "InvalidCredentials":
-                            tv_signInError.setText(R.string.invalid_credentials);
-                            break;
-
-                        default:
-                            tv_signInError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
+                    if (errorCode.equals("InvalidCredentials")) {
+                        tv_signInError.setText(R.string.invalid_credentials);
+                    } else {
+                        tv_signInError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                     }
-
-
                 } else if (exception instanceof IOException) {
                     // IOException indicates network issues (e.g., no internet connection)
                     tv_signInError.setText(R.string.network_error);

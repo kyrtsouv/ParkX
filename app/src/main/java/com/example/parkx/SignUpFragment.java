@@ -35,6 +35,14 @@ public class SignUpFragment extends Fragment {
     public SignUpFragment() {
     }
 
+    public static boolean isValidEmail(String email) {
+        // Simple regex for email validation
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+        // Use String's matches() method to check if the email matches the regex
+        return email.matches(emailRegex);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -108,7 +116,6 @@ public class SignUpFragment extends Fragment {
         SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
                     @Override
                     public void onSuccess(@NotNull Unit value) {
-
                         progressBar.setVisibility(View.GONE);
                         if (getActivity() instanceof MainActivity) {
                             ((MainActivity) getActivity()).goToHome();
@@ -120,19 +127,14 @@ public class SignUpFragment extends Fragment {
                         btn_signUp.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
 
-
                         if (exception instanceof AuthRestException) {
                             AuthRestException authRestException = (AuthRestException) exception;
                             String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
-                            String errorMessage = authRestException.getMessage();
 
-                            switch (errorCode) {
-                                case "UserAlreadyExists":
-                                    tv_signUpError.setText(R.string.email_already_in_use);
-                                    break;
-
-                                default:
-                                    tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
+                            if (errorCode.equals("UserAlreadyExists")) {
+                                tv_signUpError.setText(R.string.email_already_in_use);
+                            } else {
+                                tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                             }
 
 
@@ -150,13 +152,4 @@ public class SignUpFragment extends Fragment {
 
         );
     }
-
-    public static boolean isValidEmail(String email) {
-        // Simple regex for email validation
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
-        // Use String's matches() method to check if the email matches the regex
-        return email.matches(emailRegex);
-    }
-
 }

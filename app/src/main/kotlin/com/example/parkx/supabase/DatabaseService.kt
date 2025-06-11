@@ -48,7 +48,7 @@ object DatabaseService {
             latitude = latitude, longitude = longitude,
             exchangeTime = getInstant(exchangeTime)
         )
-        SupabaseManager.client.from("Parking Spots")
+        SupabaseManager.client.from("parking_spots")
             .insert(newSpot)
 
         return "Parking spot created"
@@ -58,32 +58,24 @@ object DatabaseService {
         parkingSpotId: Int
     ): String {
         val newRequest = NewRequest(parkingSpotId = parkingSpotId)
-        SupabaseManager.client.from("Requests")
+        SupabaseManager.client.from("requests")
             .insert(newRequest)
 
         return "Request added"
     }
 
     suspend fun getRequestsSent(): List<Request> {
-        return SupabaseManager.client.from("Requests")
-            .select() {
-                filter {
-                    eq("requester_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
-                }
-            }.decodeList<Request>()
+        return SupabaseManager.client.postgrest.rpc("get_requests_sent")
+            .decodeList<Request>()
     }
 
     suspend fun getRequestsReceived(): List<Request> {
-        return SupabaseManager.client.from("Requests")
-            .select() {
-                filter {
-                    eq("owner_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
-                }
-            }.decodeList<Request>()
+        return SupabaseManager.client.postgrest.rpc("get_requests_received")
+            .decodeList<Request>()
     }
 
     suspend fun getMyParkingSpots(): List<ParkingSpot> {
-        return SupabaseManager.client.from("Parking Spots")
+        return SupabaseManager.client.from("parking_spots")
             .select() {
                 filter {
                     eq("user_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
