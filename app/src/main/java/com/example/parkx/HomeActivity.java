@@ -71,7 +71,6 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
     @Override
     public void onToggleFullscreen() {
         isFullscreen = !isFullscreen;
-
         if (isFullscreen)
             hideBottomNavigationView(200);
         else

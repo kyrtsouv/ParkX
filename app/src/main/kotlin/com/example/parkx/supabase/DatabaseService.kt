@@ -60,7 +60,6 @@ object DatabaseService {
         val newRequest = NewRequest(parkingSpotId = parkingSpotId)
         SupabaseManager.client.from("requests")
             .insert(newRequest)
-
         return "Request added"
     }
 

@@ -1,47 +1,33 @@
 package com.example.parkx;
-import com.example.parkx.supabase.SupabaseManager;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.parkx.RecyclerAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.parkx.R;
+import com.example.parkx.supabase.SupabaseManager;
 import com.example.parkx.utils.JavaResultCallback;
 import com.example.parkx.utils.Request;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
 public class Requests_sent extends Fragment {
-    List<String> title=  Arrays.asList("Received X", "Received Y", "Received Z");
-    List<String> details = Arrays.asList("Details X");
-    List<Integer> images = Arrays.asList(
-            R.drawable.android_image_4
-    );
+    List<String> titles = new ArrayList<>();
+    List<String> details = new ArrayList<>();
+    List<Integer> images = new ArrayList<>();
 
 
-
-
-
-
-    @Nullable
     @Override
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_sent, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -49,40 +35,37 @@ public class Requests_sent extends Fragment {
         SupabaseManager.getRequestsSent(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
-
                 List<String> titles = new ArrayList<>();
                 List<String> details = new ArrayList<>();
                 List<Integer> images = new ArrayList<>();
+
                 for (Request request : value) {
-                    title.add(request.getStatus().toString());
+                    titles.add(request.getStatus().toString());
                     details.add(String.valueOf(request.getId()));
-                    switch (request.getStatus().toString()) {
-                        case "ACCEPTED":
+                    switch (request.getStatus()) {
+                        case ACCEPTED:
                             images.add(R.drawable.checkmark_svgrepo_com);
                             break;
-                        case "REJECTED":
-
+                        case REJECTED:
                             images.add(R.drawable.crossmark_svgrepo_com);
                             break;
-                        case "PENDING":
+                        case PENDING:
                             images.add(R.drawable.pending_svgrepo_com);
                             break;
-                        default: images.add(R.drawable.crossmark_svgrepo_com);}
-
-
-                            RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
-                            recyclerView.setAdapter(adapter);
-
+                    }
                 }
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
             public void onError(@NotNull Throwable exception) {
 
 
-                List<String> titles=new ArrayList<>();
-                List<String> details=new ArrayList<>();
-                List<Integer> images=new ArrayList<>();
+                titles.clear();
+                details.clear();
+                images.clear();
+
                 titles.add("Error");
                 details.add("Error");
                 images.add(R.drawable.crossmark_svgrepo_com);
@@ -96,7 +79,7 @@ public class Requests_sent extends Fragment {
 
         return view;
     }
-        }
+}
 
 
 
