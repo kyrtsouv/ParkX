@@ -123,4 +123,21 @@ object SupabaseManager {
         val metadata = client.auth.currentUserOrNull()?.userMetadata
         return metadata
     }
+
+    @JvmStatic
+    fun acceptRequest(
+        requestId: Int,
+        callback: JavaResultCallback<String>
+    ) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.acceptRequest(requestId) }, callback
+        )
+    }
+
+    @JvmStatic
+    fun rejectRequest(id: Int, callback: JavaResultCallback<String>) {
+        CoroutineExecutor.runSuspend(
+            { DatabaseService.rejectRequest(id) }, callback
+        )
+    }
 }
