@@ -62,6 +62,7 @@ public class Requests_sent extends Fragment {
                     }
                 }
                 RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                adapter.SelectedTab(0);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -79,6 +80,7 @@ public class Requests_sent extends Fragment {
 
 
                 RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                adapter.SelectedTab(0);
                 recyclerView.setAdapter(adapter);
 
             }

@@ -61,6 +61,7 @@ public class Requests_received extends Fragment {
                     }
                 }
                 RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                adapter.SelectedTab(1);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -74,6 +75,7 @@ public class Requests_received extends Fragment {
                 images.add(R.drawable.crossmark_svgrepo_com);
 
                 RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                adapter.SelectedTab(1);
                 recyclerView.setAdapter(adapter);
             }
         });
