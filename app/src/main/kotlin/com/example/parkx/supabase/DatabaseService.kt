@@ -4,7 +4,6 @@ import com.example.parkx.utils.NewParkingSpot
 import com.example.parkx.utils.NewRequest
 import com.example.parkx.utils.ParkingSpot
 import com.example.parkx.utils.Request
-import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.datetime.toKotlinInstant
@@ -74,11 +73,7 @@ object DatabaseService {
     }
 
     suspend fun getMyParkingSpots(): List<ParkingSpot> {
-        return SupabaseManager.client.from("parking_spots")
-            .select() {
-                filter {
-                    eq("user_id", SupabaseManager.client.auth.currentUserOrNull()?.id ?: "")
-                }
-            }.decodeList<ParkingSpot>()
+        return SupabaseManager.client.postgrest.rpc("get_my_parking_spots")
+            .decodeList<ParkingSpot>()
     }
 }
