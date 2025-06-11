@@ -78,7 +78,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     if (images.get(position) == R.drawable.crossmark_svgrepo_com || images.get(position) == R.drawable.checkmark_svgrepo_com) {
                         holder.btn_accept.setVisibility(View.GONE);
                         holder.btn_reject.setVisibility(View.GONE);
+
                     }
+                    else if (images.get(position)==R.drawable.pending_svgrepo_com)
+                        holder.itemImage.setVisibility(View.GONE);
                 }
 
 
