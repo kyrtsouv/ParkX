@@ -40,9 +40,7 @@ public class Requests_sent extends Fragment {
                 List<Integer> images = new ArrayList<>();
 
                 for (Request request : value) {
-
-                    String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() + " " +
-                            " has requested your spot at coordinates : ";
+                    String title = "You have requested " + request.getOwnerName() + " " + request.getOwnerSurname() + "'s spot at coordinates :";
 
                     titles.add(title);
 
