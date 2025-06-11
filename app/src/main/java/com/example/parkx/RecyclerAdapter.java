@@ -10,32 +10,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.parkx.R;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.parkx.supabase.SupabaseManager;
+import com.example.parkx.utils.JavaResultCallback;
+import com.example.parkx.utils.RequestStatus;
 
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private final List<String> titles;
-    private int selectedTab;
-
-
     private final List<String> details;
-
     private final List<Integer> images;
+    private final List<Integer> ids;
+    private final List<RequestStatus> statuses;
+    private final int selectedTab;
 
-    public RecyclerAdapter(List<String> titles, List<String> details, List<Integer> images) {
+    public RecyclerAdapter(List<String> titles, List<String> details, List<Integer> images, List<Integer> ids, List<RequestStatus> statuses, int selectedTab) {
         this.titles = titles;
         this.details = details;
         this.images = images;
-        this.selectedTab=0;
-    }
-    public void SelectedTab(int number){
-        this.selectedTab=number;
+        this.ids = ids;
+        this.statuses = statuses;
 
-
+        this.selectedTab = selectedTab;
     }
+
     @NonNull
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,12 +44,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
-      // if (titles != null && !titles.isEmpty() && position < titles.size()) {
-      //     holder.itemTitle.setText(titles.get(position));
-      // } else {
-      //     holder.itemTitle.setText("No data available"); // Prevent crash
-      // }
+    public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
+        // if (titles != null && !titles.isEmpty() && position < titles.size()) {
+        //     holder.itemTitle.setText(titles.get(position));
+        // } else {
+        //     holder.itemTitle.setText("No data available"); // Prevent crash
+        // }
 
         if (titles != null && details != null && images != null &&
                 position < titles.size() && position < details.size() && position < images.size()) {
@@ -69,33 +68,63 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             holder.itemImage.setImageResource(R.drawable.crossmark_svgrepo_com); // Provide a fallback image
         }
 
-        if(this.selectedTab==0){
-
+        if (this.selectedTab == 0) {
             holder.btn_accept.setVisibility(View.GONE);
-            holder.btn_reject.setVisibility(View.GONE); }
-            if(this.selectedTab==1) {
-                if (images != null) {
-                    if (images.get(position) == R.drawable.crossmark_svgrepo_com || images.get(position) == R.drawable.checkmark_svgrepo_com) {
-                        holder.btn_accept.setVisibility(View.GONE);
-                        holder.btn_reject.setVisibility(View.GONE);
-
-                    }
-                    else if (images.get(position)==R.drawable.pending_svgrepo_com)
-                        holder.itemImage.setVisibility(View.GONE);
-                }
-
-
+            holder.btn_reject.setVisibility(View.GONE);
         }
+        if (this.selectedTab == 1) {
+            if (images != null) {
+                if (statuses.get(position) == RequestStatus.PENDING) {
+                    holder.itemImage.setVisibility(View.GONE);
+                    holder.btn_accept.setOnClickListener(v -> acceptRequest(holder, position));
+                    holder.btn_reject.setOnClickListener(v -> rejectRequest(holder, position));
+                } else {
+                    holder.btn_accept.setVisibility(View.GONE);
+                    holder.btn_reject.setVisibility(View.GONE);
 
 
+                }
+            }
+        }
+    }
 
+    public void acceptRequest(RecyclerAdapter.ViewHolder holder, int position) {
+        SupabaseManager.acceptRequest(ids.get(position), new JavaResultCallback<>() {
+            @Override
+            public void onSuccess(String value) {
+                holder.btn_accept.setVisibility(View.GONE);
+                holder.btn_reject.setVisibility(View.GONE);
+                holder.itemImage.setImageResource(R.drawable.checkmark_svgrepo_com);
+                holder.itemImage.setVisibility(View.VISIBLE);
+            }
 
+            @Override
+            public void onError(@NonNull Throwable exception) {
+                System.out.println("Error accepting request: " + exception.getMessage());
+            }
+        });
+    }
 
+    public void rejectRequest(RecyclerAdapter.ViewHolder holder, int position) {
+        SupabaseManager.rejectRequest(ids.get(position), new JavaResultCallback<>() {
+            @Override
+            public void onSuccess(String value) {
+                holder.btn_accept.setVisibility(View.GONE);
+                holder.btn_reject.setVisibility(View.GONE);
+                holder.itemImage.setImageResource(R.drawable.crossmark_svgrepo_com);
+                holder.itemImage.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable exception) {
+                System.out.println("Error rejecting request: " + exception.getMessage());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return titles == null ? 0 :titles.size();
+        return titles == null ? 0 : titles.size();
     }
 
     //Class that holds the items to be displayed (Views in card_layout)
@@ -113,20 +142,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             itemImage = itemView.findViewById(R.id.item_image);
             itemTitle = itemView.findViewById(R.id.item_title);
             itemDetail = itemView.findViewById(R.id.item_detail);
-            btn_accept=itemView.findViewById(R.id.btn_accept);
-            btn_reject=itemView.findViewById(R.id.btn_reject);
-
-
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    Snackbar.make(v, "Click detected on item " + position,
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+            btn_accept = itemView.findViewById(R.id.btn_accept);
+            btn_reject = itemView.findViewById(R.id.btn_reject);
         }
     }
 }

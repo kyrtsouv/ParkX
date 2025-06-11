@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.parkx.supabase.SupabaseManager;
 import com.example.parkx.utils.JavaResultCallback;
 import com.example.parkx.utils.Request;
+import com.example.parkx.utils.RequestStatus;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,8 @@ public class Requests_received extends Fragment {
     List<String> titles = new ArrayList<>();
     List<String> details = new ArrayList<>();
     List<Integer> images = new ArrayList<>();
+    List<Integer> ids = new ArrayList<>();
+    List<RequestStatus> statuses = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,10 +46,9 @@ public class Requests_received extends Fragment {
                             " has requested your spot at coordinates : ";
 
                     titles.add(title);
-
-                    String detail = String.format("%.5f %.5f", request.getLatitude(), request.getLongitude());
-                    details.add(detail);
-
+                    details.add(String.format("%.5f %.5f", request.getLatitude(), request.getLongitude()));
+                    ids.add(request.getId());
+                    statuses.add(request.getStatus());
 
                     switch (request.getStatus()) {
                         case ACCEPTED:
@@ -60,8 +62,7 @@ public class Requests_received extends Fragment {
                             break;
                     }
                 }
-                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
-                adapter.SelectedTab(1);
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images, ids, statuses, 1);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -74,8 +75,7 @@ public class Requests_received extends Fragment {
                 details.add("Error");
                 images.add(R.drawable.crossmark_svgrepo_com);
 
-                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
-                adapter.SelectedTab(1);
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images, new ArrayList<>(), new ArrayList<>(), 1);
                 recyclerView.setAdapter(adapter);
             }
         });

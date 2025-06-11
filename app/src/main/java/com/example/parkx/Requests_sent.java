@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.parkx.supabase.SupabaseManager;
 import com.example.parkx.utils.JavaResultCallback;
 import com.example.parkx.utils.Request;
+import com.example.parkx.utils.RequestStatus;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,8 @@ public class Requests_sent extends Fragment {
     List<String> titles = new ArrayList<>();
     List<String> details = new ArrayList<>();
     List<Integer> images = new ArrayList<>();
+    List<Integer> ids = new ArrayList<>();
+    List<RequestStatus> statuses = new ArrayList<>();
 
 
     @Override
@@ -35,17 +38,13 @@ public class Requests_sent extends Fragment {
         SupabaseManager.getRequestsSent(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
-                List<String> titles = new ArrayList<>();
-                List<String> details = new ArrayList<>();
-                List<Integer> images = new ArrayList<>();
-
                 for (Request request : value) {
                     String title = "You have requested " + request.getOwnerName() + " " + request.getOwnerSurname() + "'s spot at coordinates :";
 
                     titles.add(title);
-
-                    String detail = String.format("%.5f %.5f", request.getLatitude(), request.getLongitude());
-                    details.add(detail);
+                    details.add(String.format("%.5f %.5f", request.getLatitude(), request.getLongitude()));
+                    ids.add(request.getId());
+                    statuses.add(request.getStatus());
                     switch (request.getStatus()) {
 
                         case ACCEPTED:
@@ -59,8 +58,7 @@ public class Requests_sent extends Fragment {
                             break;
                     }
                 }
-                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
-                adapter.SelectedTab(0);
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images, ids, statuses, 0);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -77,8 +75,7 @@ public class Requests_sent extends Fragment {
                 images.add(R.drawable.crossmark_svgrepo_com);
 
 
-                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
-                adapter.SelectedTab(0);
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images, ids, statuses, 0);
                 recyclerView.setAdapter(adapter);
 
             }
