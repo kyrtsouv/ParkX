@@ -25,11 +25,10 @@ import java.util.List;
 
 
 public class Requests_sent extends Fragment {
-    private List<String> strings = new ArrayList<>(); // Moved outside
+    List<String> title=  Arrays.asList("Received X", "Received Y", "Received Z");
     List<String> details = Arrays.asList("Details X");
     List<Integer> images = Arrays.asList(
             R.drawable.android_image_4
-
     );
 
 
@@ -50,36 +49,58 @@ public class Requests_sent extends Fragment {
         SupabaseManager.getRequestsSent(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
-                System.out.println("Total requests: " + value.size());
 
-                // Ensure `strings` is updated globally
-                strings.clear();
+                List<String> titles = new ArrayList<>();
+                List<String> details = new ArrayList<>();
+                List<Integer> images = new ArrayList<>();
                 for (Request request : value) {
-                    if (request.getRequesterId() != null) {
-                        strings.add(request.getRequesterId().toString());
-                    } else {
-                        System.out.println("Null requester ID found!");
-                    }
-                }
-                System.out.println("Strings " + strings.size());
+                    title.add(request.getStatus().toString());
+                    details.add(String.valueOf(request.getId()));
+                    switch (request.getStatus().toString()) {
+                        case "ACCEPTED":
+                            images.add(R.drawable.checkmark_svgrepo_com);
+                            break;
+                        case "REJECTED":
 
-                // Set adapter AFTER data is loaded
-                RecyclerAdapter adapter = new RecyclerAdapter(strings, details, images);
-                recyclerView.setAdapter(adapter);
+                            images.add(R.drawable.crossmark_svgrepo_com);
+                            break;
+                        case "PENDING":
+                            images.add(R.drawable.pending_svgrepo_com);
+                            break;
+                        default: images.add(R.drawable.crossmark_svgrepo_com);}
+
+
+                            RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                            recyclerView.setAdapter(adapter);
+
+                }
             }
 
             @Override
             public void onError(@NotNull Throwable exception) {
-                strings.clear();
-                strings.add("Error encountered");
-                System.out.println("Error fetching requests: " + exception.getMessage());
+
+
+                List<String> titles=new ArrayList<>();
+                List<String> details=new ArrayList<>();
+                List<Integer> images=new ArrayList<>();
+                titles.add("Error");
+                details.add("Error");
+                images.add(R.drawable.crossmark_svgrepo_com);
+
+
+                RecyclerAdapter adapter = new RecyclerAdapter(titles, details, images);
+                recyclerView.setAdapter(adapter);
+
             }
         });
 
         return view;
     }
+        }
 
 
 
 
-}
+
+
+

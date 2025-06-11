@@ -44,18 +44,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
       //     holder.itemTitle.setText("No data available"); // Prevent crash
       // }
 
-        if((titles.size()==details.size()) && (details.size()==images.size()) && !images.isEmpty())
-        {  holder.itemTitle.setText(titles.get(position));
-         holder.itemDetail.setText(details.get(position));
-          holder.itemImage.setImageResource(images.get(position));  }
+        if (titles != null && details != null && images != null &&
+                position < titles.size() && position < details.size() && position < images.size()) {
 
+
+            if (titles.size() == details.size() && details.size() == images.size() && !images.isEmpty()) {
+                holder.itemTitle.setText(titles.get(position));
+                holder.itemDetail.setText(details.get(position));
+                holder.itemImage.setImageResource(images.get(position));
+            } else {
+                holder.itemTitle.setText("Error: Mismatched data");
+            }
+        } else {
+            holder.itemTitle.setText("Error: No data available");
+            holder.itemDetail.setText("");
+            holder.itemImage.setImageResource(R.drawable.crossmark_svgrepo_com); // Provide a fallback image
+        }
 
 
     }
 
     @Override
     public int getItemCount() {
-        return titles.size();
+        return titles == null ? 0 :titles.size();
     }
 
     //Class that holds the items to be displayed (Views in card_layout)
