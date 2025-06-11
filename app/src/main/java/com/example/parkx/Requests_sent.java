@@ -32,17 +32,8 @@ public class Requests_sent extends Fragment {
 
     );
 
-
-
-
-
-
-    @Nullable
     @Override
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_sent, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -55,11 +46,7 @@ public class Requests_sent extends Fragment {
                 // Ensure `strings` is updated globally
                 strings.clear();
                 for (Request request : value) {
-                    if (request.getRequesterId() != null) {
-                        strings.add(request.getRequesterId().toString());
-                    } else {
-                        System.out.println("Null requester ID found!");
-                    }
+                    strings.add(request.getRequesterName());
                 }
                 System.out.println("Strings " + strings.size());
 

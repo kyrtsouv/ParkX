@@ -36,9 +36,13 @@ data class NewRequest(
 @Serializable
 data class Request(
     val id: Int,
-    @SerialName("parking_spot_id") val parkingSpotId: Int,
-    @SerialName("owner_id") val ownerId: String,
-    @SerialName("requester_id") val requesterId: String,
+    val latitude: Double,
+    val longitude: Double,
+    @SerialName("exchange_time") private val exchangeTime: Instant,
+    @SerialName("owner_name") val ownerName: String,
+    @SerialName("owner_surname") val ownerSurname: String,
+    @SerialName("requester_name") val requesterName: String,
+    @SerialName("requester_surname") val requesterSurname: String,
     val status: RequestStatus
 )
 
