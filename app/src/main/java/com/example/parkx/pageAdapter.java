@@ -23,7 +23,7 @@ public class pageAdapter extends FragmentStateAdapter {
             case 1:
                 return new Requests_received();
             case 2:
-                return new PostMapFragment();
+                return new ProfileParkingSpots();
             default:
                 return new Requests_sent(); // fallback
         }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,19 @@ public class SearchMapFragment extends MapFragment {
     private Circle circle = null;
     private int minutes=0,hours=0,day=0,month=0,year=0;
     private LocalDateTime localDateTime;
+    private Button button_date_time;
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        button_date_time=view.findViewById(R.id.btn_date);
+        button_date_time.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+                setTime();
+            }
+        });
+    }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -62,6 +76,9 @@ public class SearchMapFragment extends MapFragment {
         });
     }
 
+    /// μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
+    /// που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker)
+    /// μαζι με την ωρα επιλογης , αλλιως στελενει μαζι με ωρα συστηματος
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
@@ -76,7 +93,7 @@ public class SearchMapFragment extends MapFragment {
         SupabaseManager.getSpots(temp.latitude, temp.longitude, localDateTime, new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<ParkingSpot> value) {
-                //ακτινα κυκλου γύρο από το χρηστη
+                //ακτινα κυκλου γύρο από το χρηστη 1000m
                 int RADIUS = 1000;
                 if (circle != null)
                     circle.remove();
@@ -94,7 +111,6 @@ public class SearchMapFragment extends MapFragment {
                     markers_P.add(marker);
                 }
             }
-
             @Override
             public void onError(@NonNull Throwable exception) {
                 Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
@@ -120,6 +136,9 @@ public class SearchMapFragment extends MapFragment {
         });
     }
 
+    /// popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
+    /// που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
+    /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams")
@@ -127,11 +146,6 @@ public class SearchMapFragment extends MapFragment {
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
-        Button timeButton = view.findViewById(R.id.button_Time);
-        timeButton.setOnClickListener(view1->{
-            setTime(view1);
-
-        });
 
         title.setText(marker.getTitle());
         actionButton.setText("Αναζήτηση Θέσης Πάρκινγκ");
@@ -144,6 +158,7 @@ public class SearchMapFragment extends MapFragment {
         bottomDialog.show();
     }
 
+    /// μενου για αιτημα συζευξης του χρηστη με το Marker(πρασινο) ποε επιλεξε
     private void bottomMapRequest(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams")
@@ -164,12 +179,13 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /// εμφανιση TimePicker για ημερομηνία και ώρα
-    private void setTime(View view){
+    private void setTime(){
 
         /// προσθετω +3 στην ωρα για το 24ωρο ρολοι
-        TimePickerDialog.OnTimeSetListener onTimeSetListener= (timePicker, selectedHour, selectedMinute) -> {
+        @SuppressLint("SetTextI18n") TimePickerDialog.OnTimeSetListener onTimeSetListener= (timePicker, selectedHour, selectedMinute) -> {
             hours=selectedHour+3;
             minutes=selectedMinute;
+            button_date_time.setText(day+"-"+month+"-"+year+"  "+hours+":"+minutes+":00");
             Log.d("mytag", "Ώρα: " + selectedHour + ":" + selectedMinute);
         };
 
@@ -181,7 +197,7 @@ public class SearchMapFragment extends MapFragment {
             year=Year;
             month=Month+1;
             day=dayOfMonth;
-            }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue(), LocalDateTime.now().getDayOfMonth());
+            }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue()-1, LocalDateTime.now().getDayOfMonth());
         onDateSetListener.show();
 
     }

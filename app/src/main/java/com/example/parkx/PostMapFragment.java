@@ -27,10 +27,21 @@ public class PostMapFragment extends MapFragment {
 
     private int minutes=0,hours=0,day=0,month=0,year=0;
     private LocalDateTime localDateTime=LocalDateTime.now();
+    //private TextView button_date,button_time;
+    private Button button_date_time;
 
+    @SuppressLint("CutPasteId")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        button_date_time=view.findViewById(R.id.btn_date);
+        button_date_time.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+                setTime();
+            }
+        });
     }
 
     @Override
@@ -51,17 +62,15 @@ public class PostMapFragment extends MapFragment {
         });
     }
 
-
+    /// μεθοδος popup μενου απο κατω που στελνει στη βαση τις συντεταγμενες του marker
+    /// που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
+    /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
     public void bottomMap(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
-        Button timeButton = view.findViewById(R.id.button_Time);
-        timeButton.setOnClickListener(view1->{
-            setTime(view1);
-        });
 
         title.setText(marker.getTitle());
         actionButton.setText("Προσθήκη Θέσης Πάρκινγκ");
@@ -95,12 +104,13 @@ public class PostMapFragment extends MapFragment {
     }
 
     /// εμφανιση TimePicker για ημερομηνία και ώρα
-    private void setTime(View view){
+    private void setTime(){
 
-        /// προσθετω +3 στην ωρα για το 24ωρο ρολοι
-        TimePickerDialog.OnTimeSetListener onTimeSetListener= (timePicker, selectedHour, selectedMinute) -> {
+        /// προσθετω +3 στην ωρα για το 24ωρο ρολοι +
+        @SuppressLint("SetTextI18n") TimePickerDialog.OnTimeSetListener onTimeSetListener= (timePicker, selectedHour, selectedMinute) -> {
             hours=selectedHour+3;
             minutes=selectedMinute;
+            button_date_time.setText(day+"-"+month+"-"+year+"  "+hours+":"+minutes+":00");
             Log.d("mytag", "Ώρα: " + selectedHour + ":" + selectedMinute);
         };
 
@@ -108,11 +118,11 @@ public class PostMapFragment extends MapFragment {
         timePickerDialog.show();
 
         /// προσθετω +1 στο μηνα γιατι ξεκιναει απο το 0 (Ιανουαριος=0)
-        DatePickerDialog onDateSetListener =new DatePickerDialog(requireContext(), (datePicker, Year, Month, dayOfMonth) -> {
+        @SuppressLint("SetTextI18n") DatePickerDialog onDateSetListener =new DatePickerDialog(requireContext(), (datePicker, Year, Month, dayOfMonth) -> {
             year=Year;
             month=Month+1;
             day=dayOfMonth;
-        }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue(), LocalDateTime.now().getDayOfMonth());
+        }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue()-1, LocalDateTime.now().getDayOfMonth());
         onDateSetListener.show();
 
     }
