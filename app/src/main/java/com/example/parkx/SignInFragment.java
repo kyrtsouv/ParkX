@@ -74,7 +74,8 @@ public class SignInFragment extends Fragment {
         btn_signIn.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
 
-        boolean debug = true;
+        /// change this for auto sign_in or not
+        boolean debug = false;
         if (debug) {
             email = "test@email.com";
             password = "password";

@@ -24,7 +24,6 @@ public class ProfileParkingSpots extends MapFragment{
         super.onViewCreated(view, savedInstanceState);
         Button btn = view.findViewById(R.id.btn_date);
         btn.setVisibility(View.INVISIBLE);
-
     }
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -38,9 +37,7 @@ public class ProfileParkingSpots extends MapFragment{
                     googleMap.addMarker(new MarkerOptions().position(temp)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 }
-
             }
-
             @Override
             public void onError(@NonNull Throwable exception) {
                 Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης Parking Spots στο Προφιλ" +
