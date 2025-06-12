@@ -1,9 +1,15 @@
 package com.example.parkx;
-
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,8 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.parkx.pageAdapter;
+import com.example.parkx.supabase.AuthService;
+import com.example.parkx.supabase.SupabaseManager;
+import com.example.parkx.utils.JavaResultCallback;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.jetbrains.annotations.NotNull;
 
 public class RequestsFragment extends Fragment {
 
@@ -21,7 +32,12 @@ public class RequestsFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     //    RecyclerView.Adapter<RecyclerAdapter.ViewHolder> adapter;
     private ViewPager2 viewPager;
+
     private TabLayout tabLayout;
+
+    private Button btn_signOut;
+     private TextView topText;
+
 
     @Nullable
     @Override
@@ -30,12 +46,55 @@ public class RequestsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_requests, container, false);
     }
 
+    public void log_out(){
+
+
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
        viewPager = view.findViewById(R.id.viewP);
         tabLayout = view.findViewById(R.id.tab);
+        topText=view.findViewById(R.id.topText);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(String.valueOf((SupabaseManager.getMetadata())));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        String greet= null;
+        try {
+            greet = "Hello "+jsonObject.getString("name")+ " " + jsonObject.getString("surname");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        topText.setText(greet);
+
+
+
+        btn_signOut= view.findViewById(R.id.btn_signOut);
+        btn_signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SupabaseManager.signOut(new JavaResultCallback<String>() {
+                    @Override
+                    public void onSuccess(String value) {
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable exception) {
+
+
+                    }
+                });
+            }
+        });
 
         pageAdapter adapter = new pageAdapter(requireActivity()); // FragmentActivity required
         viewPager.setAdapter(adapter);

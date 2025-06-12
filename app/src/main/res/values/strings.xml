@@ -28,4 +28,5 @@
     <string name="generic_error">"Unexpected error: "</string>
     <string name="email_already_in_use">This email is in use. Please choose a different one</string>
     <string name="not_valid_email">Please enter a valid Email</string>
+    <string name="log_out">Log out</string>
 </resources>
