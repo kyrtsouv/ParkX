@@ -61,14 +61,15 @@ public class RequestsFragment extends Fragment {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(String.valueOf((SupabaseManager.getMetadata())));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        } catch (JSONException ignored) {
+
         }
         String greet= null;
         try {
-            greet = "Hello "+jsonObject.getString("name")+ " " + jsonObject.getString("surname");
+            greet = "Hello "+jsonObject.getString("name")+ " " + jsonObject.getString("surname")+ "!";
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            greet = "Hello!";
+
         }
 
         topText.setText(greet);
