@@ -139,6 +139,7 @@ public class SearchMapFragment extends MapFragment {
     /// popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
     /// που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
     /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
+    @SuppressLint("SetTextI18n")
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams")
@@ -147,8 +148,8 @@ public class SearchMapFragment extends MapFragment {
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
 
-        title.setText(marker.getTitle());
-        actionButton.setText("Αναζήτηση Θέσης Πάρκινγκ");
+        title.setText("Αναζήτηση παρκινγκ σε ακτίνα 1km από marker");
+        actionButton.setText("Αναζήτηση");
         actionButton.setOnClickListener(v -> {
             bottomDialog.dismiss();
             checkParking(marker);

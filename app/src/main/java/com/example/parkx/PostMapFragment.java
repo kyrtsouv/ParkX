@@ -72,8 +72,8 @@ public class PostMapFragment extends MapFragment {
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
 
-        title.setText(marker.getTitle());
-        actionButton.setText("Προσθήκη Θέσης Πάρκινγκ");
+        title.setText("Θέλετε να προσθέσετε αυτή τη θέση πάρκινγκ?");
+        actionButton.setText("Προσθήκη Θέσης Παρκινγκ");
         actionButton.setOnClickListener(v -> {
             bottomDialog.dismiss();
             LatLng temp = marker.getPosition();

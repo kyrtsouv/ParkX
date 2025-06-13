@@ -1,14 +1,18 @@
 package com.example.parkx;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 
 import androidx.annotation.NonNull;
@@ -36,8 +40,7 @@ public class RequestsFragment extends Fragment {
     private TabLayout tabLayout;
 
     private Button btn_signOut;
-     private TextView topText;
-
+    private TextView topText;
 
     @Nullable
     @Override
@@ -46,27 +49,27 @@ public class RequestsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_requests, container, false);
     }
 
-    public void log_out(){
-
+    public void log_out() {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-       viewPager = view.findViewById(R.id.viewP);
+        viewPager = view.findViewById(R.id.viewP);
         tabLayout = view.findViewById(R.id.tab);
-        topText=view.findViewById(R.id.topText);
+        topText = view.findViewById(R.id.topText);
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(String.valueOf((SupabaseManager.getMetadata())));
         } catch (JSONException ignored) {
 
         }
-        String greet= null;
+        String greet = null;
         try {
-            greet = "Hello "+jsonObject.getString("name")+ " " + jsonObject.getString("surname")+ "!";
+            greet = "Hello " + jsonObject.getString("name") + " " + jsonObject.getString("surname") + "!";
         } catch (JSONException e) {
             greet = "Hello!";
 
@@ -74,9 +77,7 @@ public class RequestsFragment extends Fragment {
 
         topText.setText(greet);
 
-
-
-        btn_signOut= view.findViewById(R.id.btn_signOut);
+        btn_signOut = view.findViewById(R.id.btn_signOut);
         btn_signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,12 +86,10 @@ public class RequestsFragment extends Fragment {
                     public void onSuccess(String value) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         startActivity(intent);
-
                     }
 
                     @Override
                     public void onError(@NotNull Throwable exception) {
-
 
                     }
                 });
@@ -115,5 +114,16 @@ public class RequestsFragment extends Fragment {
                     }
                 }
         ).attach();
+
+        // Add a PageChangeCallback to enable/disable swiping
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                // Enable swipe on other pages excepts 2 -> Map
+                viewPager.setUserInputEnabled(position != 2);
+            }
+        });
+
     }
 }
