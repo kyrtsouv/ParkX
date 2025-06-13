@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Requests_sent extends Fragment {
+public class RequestsSent extends Fragment {
     List<String> titles = new ArrayList<>();
     List<String> details = new ArrayList<>();
     List<Integer> images = new ArrayList<>();
@@ -42,7 +42,8 @@ public class Requests_sent extends Fragment {
                     String title = "You have requested " + request.getOwnerName() + " " + request.getOwnerSurname() + "'s spot at coordinates :";
 
                     titles.add(title);
-                    details.add(String.format("%.5f %.5f", request.getLatitude(), request.getLongitude()));
+                    details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
+                            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                     ids.add(request.getId());
                     statuses.add(request.getStatus());
                     switch (request.getStatus()) {

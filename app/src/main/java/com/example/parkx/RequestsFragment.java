@@ -1,19 +1,12 @@
 package com.example.parkx;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,14 +14,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.parkx.pageAdapter;
-import com.example.parkx.supabase.AuthService;
 import com.example.parkx.supabase.SupabaseManager;
 import com.example.parkx.utils.JavaResultCallback;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RequestsFragment extends Fragment {
 
@@ -51,9 +44,9 @@ public class RequestsFragment extends Fragment {
 
     public void log_out() {
 
+
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -77,6 +70,7 @@ public class RequestsFragment extends Fragment {
 
         topText.setText(greet);
 
+
         btn_signOut = view.findViewById(R.id.btn_signOut);
         btn_signOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,17 +80,19 @@ public class RequestsFragment extends Fragment {
                     public void onSuccess(String value) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         startActivity(intent);
+
                     }
 
                     @Override
                     public void onError(@NotNull Throwable exception) {
+
 
                     }
                 });
             }
         });
 
-        pageAdapter adapter = new pageAdapter(requireActivity()); // FragmentActivity required
+        PageAdapter adapter = new PageAdapter(requireActivity()); // FragmentActivity required
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager,

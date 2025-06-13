@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
 
     <LinearLayout
@@ -12,9 +12,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <LinearLayout
@@ -25,56 +25,56 @@
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="48dp"
-                android:hint="@string/name"
-                android:saveEnabled="false"
-                android:inputType="textPersonName"
-                android:autofillHints="name"
                 android:layout_marginEnd="8dp"
-                android:gravity="start|center_vertical" />
+                android:layout_weight="1"
+                android:autofillHints="name"
+                android:gravity="start|center_vertical"
+                android:hint="@string/name"
+                android:inputType="textPersonName"
+                android:saveEnabled="false" />
 
             <EditText
                 android:id="@+id/et_surname"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="48dp"
-                android:hint="@string/surname"
-                android:saveEnabled="false"
+                android:layout_weight="1"
                 android:autofillHints="familyName"
+                android:gravity="start|center_vertical"
+                android:hint="@string/surname"
                 android:inputType="textPersonName"
-                android:gravity="start|center_vertical" />
+                android:saveEnabled="false" />
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/et_signUpEmail"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="48dp"
-                android:hint="@string/email"
-                android:saveEnabled="false"
-                android:inputType="textEmailAddress"
-                android:autofillHints="emailAddress"
                 android:layout_marginEnd="8dp"
-                android:gravity="start|center_vertical" />
+                android:layout_weight="1"
+                android:autofillHints="emailAddress"
+                android:gravity="start|center_vertical"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:saveEnabled="false" />
 
             <EditText
                 android:id="@+id/et_signUpPassword"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="48dp"
-                android:hint="@string/password"
-                android:saveEnabled="false"
-                android:inputType="textPassword"
+                android:layout_weight="1"
                 android:autofillHints="password"
-                android:gravity="start|center_vertical" />
+                android:gravity="start|center_vertical"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:saveEnabled="false" />
         </LinearLayout>
 
     </LinearLayout>
@@ -84,65 +84,55 @@
         android:id="@+id/tv_signUpError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="24dp"
-        android:textColor="#FF0000"
-        android:gravity="center"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/inputsContainer"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:minHeight="24dp"
+        android:text=""
+        android:textColor="#FF0000"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputsContainer" />
 
 
     <Button
         android:id="@+id/btn_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/sign_up"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_signUpError"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
-    <FrameLayout
-        android:id="@+id/progressBarContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_signUp">
+        app:layout_constraintTop_toBottomOf="@id/tv_signUpError" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
 
-    </FrameLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_signUp" />
 
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/you_already_have_an_account"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_goToSignIn"
-        app:layout_constraintTop_toBottomOf="@id/progressBarContainer" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
         android:id="@+id/tv_goToSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center"
         android:onClick="goToSignIn"
         android:text="@string/sign_in_here"
@@ -150,7 +140,6 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView6" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

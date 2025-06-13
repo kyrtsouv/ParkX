@@ -81,8 +81,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 } else {
                     holder.btn_accept.setVisibility(View.GONE);
                     holder.btn_reject.setVisibility(View.GONE);
-
-
                 }
             }
         }

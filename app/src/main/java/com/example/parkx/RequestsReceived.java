@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Requests_received extends Fragment {
+public class RequestsReceived extends Fragment {
 
     List<String> titles = new ArrayList<>();
     List<String> details = new ArrayList<>();
@@ -42,11 +42,12 @@ public class Requests_received extends Fragment {
             public void onSuccess(List<Request> value) {
 
                 for (Request request : value) {
-                    String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() + " " +
+                    String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() +
                             " has requested your spot at coordinates : ";
 
                     titles.add(title);
-                    details.add(String.format("%.5f %.5f", request.getLatitude(), request.getLongitude()));
+                    details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
+                            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                     ids.add(request.getId());
                     statuses.add(request.getStatus());
 

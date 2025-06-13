@@ -6,10 +6,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 
+public class PageAdapter extends FragmentStateAdapter {
 
-public class pageAdapter extends FragmentStateAdapter {
-
-    public pageAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public PageAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -19,13 +18,13 @@ public class pageAdapter extends FragmentStateAdapter {
         // Return different fragment for each tab
         switch (position) {
             case 0:
-                return new Requests_sent();
+                return new RequestsSent();
             case 1:
-                return new Requests_received();
+                return new RequestsReceived();
             case 2:
                 return new ProfileParkingSpots();
             default:
-                return new Requests_sent(); // fallback
+                return new RequestsSent(); // fallback
         }
     }
 

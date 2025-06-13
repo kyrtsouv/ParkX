@@ -1,10 +1,13 @@
 package com.example.parkx;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,15 +21,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.time.LocalDateTime;
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap mMap;
     protected Marker marker_M;
     protected LatLng markerPosition;
-
+    /// εμφανιση TimePicker για ημερομηνία και ώρα
+    protected int minutes, hours, day, month, year;
+    protected LocalDateTime dateTime = LocalDateTime.now();
     private ToggleFullscreenListener toggleFullscreenListener;
-
     private CameraPosition cameraPosition;
+    private Button button_date_time;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,7 +61,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             cameraPosition = savedInstanceState.getParcelable("cameraPosition");
             markerPosition = savedInstanceState.getParcelable("markerPosition");
         }
-
+        button_date_time = view.findViewById(R.id.btn_date);
+        button_date_time.setText(dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+        button_date_time.setOnClickListener(view1 -> setTime());
     }
 
     @Override
@@ -91,6 +100,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             outState.putParcelable("markerPosition", marker_M.getPosition());
         }
     }
+
+    private void setTime() {
+
+        new DatePickerDialog(requireContext(), (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+            year = selectedYear;
+            month = selectedMonth + 1; // προσθετω +1 στο μηνα γιατι ξεκιναει απο το 0 (Ιανουαριος=0)
+            day = selectedDay;
+
+            new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+                hours = selectedHour;
+                minutes = selectedMinute;
+
+                dateTime = LocalDateTime.of(year, month, day, hours, minutes);
+                button_date_time.setText(dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+
+            }, hours, minutes, true).show();
+        }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue() - 1, LocalDateTime.now().getDayOfMonth()).show();
+
+    }
+
 
     public interface ToggleFullscreenListener {
         void onToggleFullscreen();

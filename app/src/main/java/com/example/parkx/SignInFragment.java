@@ -75,7 +75,7 @@ public class SignInFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         /// change this for auto sign_in or not
-        boolean debug = false;
+        boolean debug = true;
         if (debug) {
             email = "test@email.com";
             password = "password";
@@ -94,7 +94,6 @@ public class SignInFragment extends Fragment {
         SupabaseManager.signIn(email, password, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
-//                btn_signIn.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).goToHome();

@@ -44,7 +44,11 @@ data class Request(
     @SerialName("requester_name") val requesterName: String,
     @SerialName("requester_surname") val requesterSurname: String,
     val status: RequestStatus
-)
+) {
+    fun getExchangeTime(): LocalDateTime {
+        return exchangeTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+    }
+}
 
 @Serializable
 enum class RequestStatus {
