@@ -60,6 +60,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (savedInstanceState != null) {
             cameraPosition = savedInstanceState.getParcelable("cameraPosition");
             markerPosition = savedInstanceState.getParcelable("markerPosition");
+            dateTime = (LocalDateTime) savedInstanceState.getSerializable("dateTime");
         }
         button_date_time = view.findViewById(R.id.btn_date);
         button_date_time.setText(dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
@@ -85,9 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
 
-        mMap.setOnMapClickListener(latLng -> {
-            toggleFullscreenListener.onToggleFullscreen();
-        });
+        mMap.setOnMapClickListener(latLng -> toggleFullscreenListener.onToggleFullscreen());
     }
 
     @Override
@@ -99,6 +98,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (marker_M != null) {
             outState.putParcelable("markerPosition", marker_M.getPosition());
         }
+        outState.putSerializable("dateTime", dateTime);
     }
 
     private void setTime() {

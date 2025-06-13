@@ -2,6 +2,7 @@ package com.example.parkx;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,28 +28,77 @@ import java.util.List;
 
 public class SearchMapFragment extends MapFragment {
     private final List<Marker> markers_P = new ArrayList<>();
+    private final CircleOptions circleOptions = new CircleOptions().radius(1000).strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3);
+    private List<ParkingSpot> parkingSpots = new ArrayList<>();
+    private boolean bottomMapSearchVisible = false;
+    private boolean bottomMapRequestVisible = false;
+    private int requestId = -1;
     private Circle circle = null;
+    private LatLng circleCenter;
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            bottomMapSearchVisible = savedInstanceState.getBoolean("bottomMapSearchVisible", false);
+            bottomMapRequestVisible = savedInstanceState.getBoolean("bottomMapRequestVisible", false);
+            circleCenter = savedInstanceState.getParcelable("circleCenter");
+            parkingSpots = (List<ParkingSpot>) savedInstanceState.getSerializable("parkingSpots");
+            requestId = savedInstanceState.getInt("requestId", -1);
+        }
+    }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
 
         mMap.setOnMapLongClickListener(latLng -> {
-            if (marker_M != null)
-                marker_M.remove();
+            if (marker_M != null) marker_M.remove();
+            if (circle != null) circle.remove();
+            circle = null;
+            for (Marker marker : markers_P) {
+                marker.remove();
+            }
+            markers_P.clear();
+            parkingSpots.clear();
 
-            if (circle != null)
-                circle.remove();
             marker_M = mMap.addMarker(new MarkerOptions().position(latLng));
         });
 
         mMap.setOnMarkerClickListener(marker -> {
-            if (marker.equals(marker_M))
-                bottomMapSearch(marker);
-            else if (markers_P.contains(marker))
-                bottomMapRequest(marker);
+            if (marker.equals(marker_M)) bottomMapSearch(marker);
+            else if (markers_P.contains(marker)) bottomMapRequest(marker);
             return false;
         });
+
+        if (bottomMapSearchVisible && marker_M != null) {
+            bottomMapSearch(marker_M);
+        }
+        if (circleCenter != null) {
+            circle = mMap.addCircle(circleOptions.center(circleCenter));
+        }
+        for (ParkingSpot p : parkingSpots) {
+            markers_P.add(makeMarker(p));
+        }
+        if (bottomMapRequestVisible && requestId != -1) {
+            for (Marker marker : markers_P) {
+                if (((ParkingSpot) marker.getTag()).getId() == requestId) {
+                    bottomMapRequest(marker);
+                    break;
+                }
+            }
+        }
+    }
+
+    private Marker makeMarker(ParkingSpot parkingSpot) {
+        LatLng ParkingLocationXY = new LatLng(parkingSpot.getLatitude(), parkingSpot.getLongitude());
+        MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+        Marker marker = mMap.addMarker(ParkingMarker);
+        assert marker != null;
+        marker.setTag(parkingSpot);
+        return marker;
     }
 
     /// μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
@@ -57,26 +107,14 @@ public class SearchMapFragment extends MapFragment {
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
-
         SupabaseManager.getSpots(temp.latitude, temp.longitude, dateTime, new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<ParkingSpot> value) {
-                //ακτινα κυκλου γύρο από το χρηστη 1000m
-                int RADIUS = 1000;
-                if (circle != null)
-                    circle.remove();
-                circle = mMap.addCircle(new CircleOptions().center(temp).radius(RADIUS)
-                        .strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3));
+                parkingSpots = value;
+                if (circle != null) circle.remove();
+                circle = mMap.addCircle(circleOptions.center(temp));
                 for (ParkingSpot p : value) {
-                    LatLng ParkingLocationXY = new LatLng(p.getLatitude(), p.getLongitude());
-                    MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-
-                    Marker marker = mMap.addMarker(ParkingMarker);
-
-                    assert marker != null;
-                    marker.setTag(p);
-                    markers_P.add(marker);
+                    markers_P.add(makeMarker(p));
                 }
             }
 
@@ -92,9 +130,7 @@ public class SearchMapFragment extends MapFragment {
         SupabaseManager.addRequest(id, new JavaResultCallback<>() {
             @Override
             public void onSuccess(String value) {
-                Toast.makeText(getContext(), "Εστάλει Αίτημα Σύζευξης", Toast.LENGTH_SHORT).show();
-                marker_M.remove();
-                circle.remove();
+                Toast.makeText(getContext(), "Εστάλει αίτημα", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -110,8 +146,7 @@ public class SearchMapFragment extends MapFragment {
     /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams")
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -119,31 +154,54 @@ public class SearchMapFragment extends MapFragment {
         title.setText("Αναζήτηση παρκινγκ σε ακτίνα 1km από marker");
         actionButton.setText("Αναζήτηση");
         actionButton.setOnClickListener(v -> {
-            bottomDialog.dismiss();
+            bottomDialog.cancel();
             checkParking(marker);
         });
 
+        bottomDialog.setOnCancelListener(dialog -> {
+            bottomMapSearchVisible = false;
+        });
         bottomDialog.setContentView(view);
+        bottomDialog.getBehavior().setPeekHeight(1000);
         bottomDialog.show();
+        bottomMapSearchVisible = true;
     }
 
     /// μενου για αιτημα συζευξης του χρηστη με το Marker(πρασινο) ποε επιλεξε
     private void bottomMapRequest(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams")
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
 
         title.setText(marker.getTitle());
-        actionButton.setText("Σύζευξη");
+        actionButton.setText("Κάνε αίτημα");
         actionButton.setOnClickListener(v -> {
             bottomDialog.dismiss();
             addRequest(marker);
         });
 
+        bottomDialog.setOnCancelListener(dialog -> {
+            bottomMapRequestVisible = false;
+            requestId = -1;
+        });
         bottomDialog.setContentView(view);
+        bottomDialog.getBehavior().setPeekHeight(1000);
         bottomDialog.show();
+        bottomMapRequestVisible = true;
+        requestId = ((ParkingSpot) marker.getTag()).getId();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("bottomMapSearchVisible", bottomMapSearchVisible);
+        outState.putBoolean("bottomMapRequestVisible", bottomMapRequestVisible);
+        outState.putInt("requestId", requestId);
+        if (circle != null) {
+            outState.putParcelable("circleCenter", circle.getCenter());
+        }
+        outState.putSerializable("parkingSpots", new ArrayList<>(parkingSpots));
     }
 }
