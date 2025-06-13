@@ -19,6 +19,13 @@ import java.util.List;
 
 public class ProfileParkingSpots extends MapFragment {
 
+    /**
+     *
+     * @param view               The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     *                           ορισμός κουμπιου (για την ωρα) ως αορατο
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -26,6 +33,12 @@ public class ProfileParkingSpots extends MapFragment {
         btn.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     *
+     * @param googleMap προετοιμαζεται ο χαρτης και
+     *                  καλειται η βαση για τη λιστα με ολα τα σημεια παρκινγκ του χρηστη
+     *                  και εμφανιση τους στο χαρτη με πρασινο marker
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
@@ -37,13 +50,15 @@ public class ProfileParkingSpots extends MapFragment {
             public void onSuccess(List<ParkingSpot> value) {
                 for (ParkingSpot p : value) {
                     LatLng temp = new LatLng(p.getLatitude(), p.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(temp).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    googleMap.addMarker(new MarkerOptions().position(temp).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης Parking Spots στο Προφιλ" + " ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης Parking Spots στο Προφιλ" +
+                        " ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
             }
         });
 

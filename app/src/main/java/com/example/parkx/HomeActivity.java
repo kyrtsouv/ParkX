@@ -15,6 +15,10 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     private boolean isFullscreen = false;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +43,20 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     }
 
+    /**
+     *
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isFullscreen", isFullscreen);
     }
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -59,15 +71,25 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     }
 
+    /**
+     *
+     * @param duration
+     */
     private void hideBottomNavigationView(int duration) {
         bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(duration).start();
     }
 
+    /**
+     *
+     * @param duration
+     */
     private void showBottomNavigationView(int duration) {
         bottomNavigationView.animate().translationY(0).setDuration(duration).start();
     }
 
-
+    /**
+     *
+     */
     @Override
     public void onToggleFullscreen() {
         isFullscreen = !isFullscreen;

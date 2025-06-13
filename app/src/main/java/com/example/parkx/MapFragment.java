@@ -28,13 +28,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     protected GoogleMap mMap;
     protected Marker marker_M;
     protected LatLng markerPosition;
-    /// εμφανιση TimePicker για ημερομηνία και ώρα
     protected int minutes, hours, day, month, year;
     protected LocalDateTime dateTime = LocalDateTime.now();
     private ToggleFullscreenListener toggleFullscreenListener;
     private CameraPosition cameraPosition;
     private Button button_date_time;
 
+    /**
+     *
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -45,11 +48,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     *
+     * δημιουργει View και συσχέτιση με το fragment_map
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
+    /**
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -67,11 +79,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         button_date_time.setOnClickListener(view1 -> setTime());
     }
 
+    /**
+     * @param googleMap προετοιμασια χαρτη με εστιαση στη περιοχη της Θεσσαλονίκης
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        ///αρχικοποιηση του Marker
         if (markerPosition != null) {
             marker_M = mMap.addMarker(new MarkerOptions().position(markerPosition));
         }
@@ -89,6 +103,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMapClickListener(latLng -> toggleFullscreenListener.onToggleFullscreen());
     }
 
+    /**
+     * @param outState Bundle in which to place your saved state.
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -101,6 +118,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         outState.putSerializable("dateTime", dateTime);
     }
 
+    /**
+     *
+     * Αυτή η μέθοδος όριζει την ώρα και την ημερομηνια στις τοπικά στις αντιστοιχες μεταβλητές
+     * year,month,day και hours,minutes
+     */
     private void setTime() {
 
         new DatePickerDialog(requireContext(), (datePicker, selectedYear, selectedMonth, selectedDay) -> {
@@ -119,7 +141,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue() - 1, LocalDateTime.now().getDayOfMonth()).show();
 
     }
-
 
     public interface ToggleFullscreenListener {
         void onToggleFullscreen();

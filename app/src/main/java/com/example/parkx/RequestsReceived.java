@@ -1,5 +1,6 @@
 package com.example.parkx;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,15 @@ public class RequestsReceived extends Fragment {
     List<Integer> ids = new ArrayList<>();
     List<RequestStatus> statuses = new ArrayList<>();
 
+    /**
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_received, container, false);
@@ -38,6 +48,7 @@ public class RequestsReceived extends Fragment {
 
 
         SupabaseManager.getRequestsReceived(new JavaResultCallback<>() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onSuccess(List<Request> value) {
 
@@ -80,7 +91,6 @@ public class RequestsReceived extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
-
 
         return view;
     }

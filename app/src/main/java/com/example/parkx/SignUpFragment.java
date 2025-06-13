@@ -54,16 +54,39 @@ public class SignUpFragment extends Fragment {
         outState.putString("error", tv_signUpError.getText().toString());
     }
 
+    /**
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     *
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sign_up, container, false);
     }
 
+    /**
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -88,6 +111,9 @@ public class SignUpFragment extends Fragment {
 
     }
 
+    /**
+     *
+     */
     public void SignUp() {
 
         progressBar.setVisibility(View.VISIBLE);
@@ -145,7 +171,6 @@ public class SignUpFragment extends Fragment {
                             // General error handling for other types of exceptions
                             tv_signUpError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
                         }
-
 
                     }
                 }

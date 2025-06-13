@@ -50,6 +50,12 @@ public class RequestsFragment extends Fragment {
 
     }
 
+    /**
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class RequestsFragment extends Fragment {
                     @Override
                     public void onSuccess(String value) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
-                        /// αποτρεπω το χρηστη να παει 'πισω' οταν κανει Log out
+                        // αποτρεπω το χρηστη να παει 'πισω' οταν κανει Log out
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }

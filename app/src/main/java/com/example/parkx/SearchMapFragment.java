@@ -36,6 +36,12 @@ public class SearchMapFragment extends MapFragment {
     private Circle circle = null;
     private LatLng circleCenter;
 
+    /**
+     *
+     * @param view               The View returned by @link #onCreateView(LayoutInflater, ViewGroup, Bundle)
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -49,6 +55,10 @@ public class SearchMapFragment extends MapFragment {
         }
     }
 
+    /**
+     *
+     * @param googleMap προετοιμασια χαρτη ορισμος marker και circle
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
@@ -91,9 +101,15 @@ public class SearchMapFragment extends MapFragment {
         }
     }
 
+    /**
+     *
+     * @param parkingSpot   , μεθοδος που καλειτε για να προσθεσει το σημειο εντος κυκλου ως πρασινο marker
+     * @return  marker
+     */
     private Marker makeMarker(ParkingSpot parkingSpot) {
         LatLng ParkingLocationXY = new LatLng(parkingSpot.getLatitude(), parkingSpot.getLongitude());
-        MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         Marker marker = mMap.addMarker(ParkingMarker);
         assert marker != null;
@@ -101,9 +117,13 @@ public class SearchMapFragment extends MapFragment {
         return marker;
     }
 
-    /// μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
-    /// που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker)
-    /// μαζι με την ωρα επιλογης , αλλιως στελενει μαζι με ωρα συστηματος
+    /**
+     *
+     * @param marker    μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
+     *                  που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker) μαζι με την ωρα επιλογης,
+     *                  αλλιως στελνει με ωρα συστηματος για επιτυχη αναζητηση εφμανιζεται ενας κυκλος
+     *                  ακτινας 1km γυρο απο το marker και μεσα σε αυτο
+     */
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
@@ -120,11 +140,17 @@ public class SearchMapFragment extends MapFragment {
 
             @Override
             public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ..." +
+                        " Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /**
+     *
+     * @param marker , παίρνει τις συντεταγμενες απο το marker και καλεί τη βάση δεδομένων
+     *               για να προσθεσει αιτημα αναζητησης με τις συντεταγμενες του marker
+     */
     private void addRequest(Marker marker) {
         int id = ((ParkingSpot) marker.getTag()).getId();
         SupabaseManager.addRequest(id, new JavaResultCallback<>() {
@@ -136,17 +162,23 @@ public class SearchMapFragment extends MapFragment {
             @Override
             public void onError(@NonNull Throwable exception) {
                 System.out.println(exception.getMessage());
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... " +
+                        "Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    /// popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
-    /// που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
-    /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
+    /**
+     *
+     * @param marker     popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
+     *                   που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
+     *                   αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
+     */
+    @SuppressLint("SetTextI18n")
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext())
+                    .inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -167,10 +199,14 @@ public class SearchMapFragment extends MapFragment {
         bottomMapSearchVisible = true;
     }
 
-    /// μενου για αιτημα συζευξης του χρηστη με το Marker(πρασινο) ποε επιλεξε
+    /**
+     *
+     * @param marker
+     */
     private void bottomMapRequest(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).
+                inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -193,6 +229,10 @@ public class SearchMapFragment extends MapFragment {
         requestId = ((ParkingSpot) marker.getTag()).getId();
     }
 
+    /**
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

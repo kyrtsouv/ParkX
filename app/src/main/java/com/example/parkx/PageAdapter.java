@@ -8,10 +8,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class PageAdapter extends FragmentStateAdapter {
 
+    /**
+     *
+     * @param fragmentActivity
+     */
     public PageAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
+    /**
+     *
+     * @param position  key
+     * @return          fragment
+     */
     @NonNull
     @Override
     public Fragment createFragment(int position) {
