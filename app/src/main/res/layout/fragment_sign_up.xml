@@ -130,7 +130,7 @@
         android:id="@+id/tv_goToSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:onClick="goToSignIn"
         android:text="@string/sign_in_here"

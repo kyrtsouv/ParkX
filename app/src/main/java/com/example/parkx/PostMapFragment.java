@@ -1,7 +1,10 @@
 package com.example.parkx;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,16 +21,27 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.time.LocalDateTime;
+
 public class PostMapFragment extends MapFragment {
 
-    private boolean bottomMapPostVisible = false;
+    private int minutes=0,hours=0,day=0,month=0,year=0;
+    private LocalDateTime localDateTime=LocalDateTime.now();
+    //private TextView button_date,button_time;
+    private Button button_date_time;
 
+    @SuppressLint("CutPasteId")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (savedInstanceState != null)
-            bottomMapPostVisible = savedInstanceState.getBoolean("bottomMapPostVisible", false);
+        button_date_time=view.findViewById(R.id.btn_date);
+        button_date_time.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+                setTime();
+            }
+        });
     }
 
     @Override
@@ -43,19 +57,15 @@ public class PostMapFragment extends MapFragment {
         });
 
         mMap.setOnMarkerClickListener(marker -> {
-            bottomMapPost(marker);
+            bottomMap(marker);
             return false;
         });
-
-        if (bottomMapPostVisible) {
-            bottomMapPost(marker_M);
-        }
     }
 
     /// μεθοδος popup μενου απο κατω που στελνει στη βαση τις συντεταγμενες του marker
     /// που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
     /// αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
-    public void bottomMapPost(Marker marker) {
+    public void bottomMap(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
@@ -65,13 +75,21 @@ public class PostMapFragment extends MapFragment {
         title.setText("Θέλετε να προσθέσετε αυτή τη θέση πάρκινγκ?");
         actionButton.setText("Προσθήκη Θέσης Παρκινγκ");
         actionButton.setOnClickListener(v -> {
-            bottomDialog.cancel();
+            bottomDialog.dismiss();
             LatLng temp = marker.getPosition();
 
-            SupabaseManager.publishSpot(temp.latitude, temp.longitude, dateTime, new JavaResultCallback<>() {
+            /// ελεγχος αν εχουν μπει τιμες τοτε ορισε ημερομηνιες αλλιως συνεχισε με την τοπική ώρα
+            if(year==0)
+                localDateTime=LocalDateTime.now();
+            else
+                localDateTime = LocalDateTime.of(year,month,day,hours,minutes);
+            Toast.makeText(getContext(), "Ημερομηνια : "+year+"-"+month+"-"+day+" "
+                    +(hours-3)+":"+minutes, Toast.LENGTH_SHORT).show();
+
+            SupabaseManager.publishSpot(temp.latitude, temp.longitude, localDateTime, new JavaResultCallback<>() {
                 @Override
                 public void onSuccess(String value) {
-                    Toast.makeText(getContext(), "Προστέθηκε η Θέση Πάρκινκ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Σωστή Εκτέλεση", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -79,18 +97,33 @@ public class PostMapFragment extends MapFragment {
                     Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
                 }
             });
+            Toast.makeText(getContext(), "Προστέθηκε η Θέση Πάρκινκ", Toast.LENGTH_SHORT).show();
         });
-
-        bottomDialog.setOnCancelListener(dialog -> bottomMapPostVisible = false);
         bottomDialog.setContentView(view);
-        bottomDialog.getBehavior().setPeekHeight(1000);
         bottomDialog.show();
-        bottomMapPostVisible = true;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("bottomMapPostVisible", bottomMapPostVisible);
+    /// εμφανιση TimePicker για ημερομηνία και ώρα
+    private void setTime(){
+
+        /// προσθετω +3 στην ωρα για το 24ωρο ρολοι +
+        @SuppressLint("SetTextI18n") TimePickerDialog.OnTimeSetListener onTimeSetListener= (timePicker, selectedHour, selectedMinute) -> {
+            hours=selectedHour+3;
+            minutes=selectedMinute;
+            button_date_time.setText(day+"-"+month+"-"+year+"  "+hours+":"+minutes+":00");
+            Log.d("mytag", "Ώρα: " + selectedHour + ":" + selectedMinute);
+        };
+
+        TimePickerDialog timePickerDialog=new TimePickerDialog(getContext(),onTimeSetListener,hours,minutes,true);
+        timePickerDialog.show();
+
+        /// προσθετω +1 στο μηνα γιατι ξεκιναει απο το 0 (Ιανουαριος=0)
+        @SuppressLint("SetTextI18n") DatePickerDialog onDateSetListener =new DatePickerDialog(requireContext(), (datePicker, Year, Month, dayOfMonth) -> {
+            year=Year;
+            month=Month+1;
+            day=dayOfMonth;
+        }, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue()-1, LocalDateTime.now().getDayOfMonth());
+        onDateSetListener.show();
+
     }
 }
