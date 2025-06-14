@@ -78,15 +78,18 @@ public class SignInFragment extends Fragment {
         btn_signIn.setOnClickListener(v -> signIn());
     }
 
-    /**
-     *
-     */
+
+    //This is the method that is added to the sign in button
     public void signIn() {
         String email = et_signInEmail.getText().toString();
         String password = et_signInPassword.getText().toString();
+
+        //After the login button is pressed the progress bar becomes visible (and will be for the duration of the database authentication) and the button becomes not clickable
+
         btn_signIn.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
 
+        //Checks if the email and password are empty and if they are prints the error accordingly
 
         if (email.isEmpty() || password.isEmpty()) {
             tv_signInError.setText(R.string.please_fill_in_all_fields);
@@ -97,33 +100,41 @@ public class SignInFragment extends Fragment {
 
         tv_signInError.setText("");
 
+//Performs sign in with the SupabaseManager class
+
         SupabaseManager.signIn(email, password, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
+
+ //If the login is successful it hides the progress bar and it runs the go to home function of MainActivity
+
                 progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).goToHome();
                 }
             }
-
+//If the login is not successful it handles the errors
             @Override
             public void onError(@NotNull Throwable exception) {
+           //In case of an error it hides the progress bar (since the authentication has stopped) and sets the sign in button enabled again
                 btn_signIn.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-
+//If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
                 if (exception instanceof AuthRestException) {
                     AuthRestException authRestException = (AuthRestException) exception;
                     String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
+            //This is the  case of invalid credentials
                     if (errorCode.equals("InvalidCredentials")) {
                         tv_signInError.setText(R.string.invalid_credentials);
                     } else {
+            //This is the case of all the other error codes
                         tv_signInError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                     }
                 } else if (exception instanceof IOException) {
-                    // IOException indicates network issues (e.g., no internet connection)
+                    //This is the case of IOException that indicates network issues
                     tv_signInError.setText(R.string.network_error);
                 } else {
-                    // General error handling for other types of exceptions
+                    //This is the  error handling for other types of exceptions
                     tv_signInError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
                 }
 
