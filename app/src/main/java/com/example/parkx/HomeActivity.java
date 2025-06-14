@@ -15,10 +15,7 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     private boolean isFullscreen = false;
 
-    /**
-     *
-     * @param savedInstanceState
-     */
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,11 +25,13 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
-
+//If pressed loads the PostMapFragment
             if (item.getItemId() == R.id.miPost && !(selectedFragment instanceof PostMapFragment))
                 selectedFragment = new PostMapFragment();
+//If pressed loads the SearchMapFragment
             if (item.getItemId() == R.id.miSearch && !(selectedFragment instanceof SearchMapFragment))
                 selectedFragment = new SearchMapFragment();
+ //If pressed loads the SearchMapFragment
             if (item.getItemId() == R.id.miProfile && !(selectedFragment instanceof RequestsFragment))
                 selectedFragment = new RequestsFragment();
 
@@ -43,20 +42,14 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     }
 
-    /**
-     *
-     * @param outState
-     */
+  //It saves the state and if the app is in fullscreen
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isFullscreen", isFullscreen);
     }
 
-    /**
-     *
-     * @param savedInstanceState
-     */
+    //It restores the saved state and if the app was in fullscreen it hides the bottom navigation view
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -71,25 +64,17 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
     }
 
-    /**
-     *
-     * @param duration
-     */
+
     private void hideBottomNavigationView(int duration) {
         bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(duration).start();
     }
 
-    /**
-     *
-     * @param duration
-     */
+
     private void showBottomNavigationView(int duration) {
         bottomNavigationView.animate().translationY(0).setDuration(duration).start();
     }
 
-    /**
-     *
-     */
+
     @Override
     public void onToggleFullscreen() {
         isFullscreen = !isFullscreen;

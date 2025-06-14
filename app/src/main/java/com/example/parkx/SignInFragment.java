@@ -79,7 +79,7 @@ public class SignInFragment extends Fragment {
     }
 
 
-    //This is the method that is added to the sign in button
+    //This is the method that is attached to the sign in button
     public void signIn() {
         String email = et_signInEmail.getText().toString();
         String password = et_signInPassword.getText().toString();
@@ -106,7 +106,7 @@ public class SignInFragment extends Fragment {
             @Override
             public void onSuccess(@NotNull Unit value) {
 
- //If the login is successful it hides the progress bar and it runs the go to home function of MainActivity
+ //If the login is successful it hides the progress bar and it runs the go to home method of MainActivity
 
                 progressBar.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {

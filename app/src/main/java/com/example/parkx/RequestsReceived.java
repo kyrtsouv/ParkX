@@ -29,15 +29,7 @@ public class RequestsReceived extends Fragment {
     List<Integer> ids = new ArrayList<>();
     List<RequestStatus> statuses = new ArrayList<>();
 
-    /**
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
-     *                           but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_received, container, false);
@@ -45,21 +37,23 @@ public class RequestsReceived extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
+  //The SupabaseManager getRequestsReceived method is called so that the user views the requests that are sent to them
         SupabaseManager.getRequestsReceived(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
 
+                //If the retrieval is successful the requester name is added to the title lilst
                 for (Request request : value) {
                     String title = "User " + request.getRequesterName() + " " + request.getRequesterSurname() +
                             " has requested your spot at coordinates : ";
 
                     titles.add(title);
+                 //The coordinates are provided to the details
                     details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
                             java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                     ids.add(request.getId());
                     statuses.add(request.getStatus());
-
+                //An image is chosen so that it suits the status of the request
                     switch (request.getStatus()) {
                         case ACCEPTED:
                             images.add(R.drawable.checkmark_svgrepo_com);
@@ -78,6 +72,7 @@ public class RequestsReceived extends Fragment {
 
             @Override
             public void onError(@NotNull Throwable exception) {
+              //If the retrieval is not successful it shows an error
                 titles.clear();
                 details.clear();
                 images.clear();

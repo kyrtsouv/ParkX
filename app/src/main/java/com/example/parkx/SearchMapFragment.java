@@ -36,11 +36,7 @@ public class SearchMapFragment extends MapFragment {
     private Circle circle = null;
     private LatLng circleCenter;
 
-    /**
-     * @param view               The View returned by @link #onCreateView(LayoutInflater, ViewGroup, Bundle)
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+//If the view  non-null, this fragment is  re-constructed from a previous saved state as given here.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -54,13 +50,11 @@ public class SearchMapFragment extends MapFragment {
         }
     }
 
-    /**
-     * @param googleMap προετοιμασια χαρτη ορισμος marker και circle
-     */
+    //It prepares map and assigns marker and circle
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
-
+ //Sets a long click listener that places a marker that will be used for search
         mMap.setOnMapLongClickListener(latLng -> {
             if (marker_M != null) marker_M.remove();
             if (circle != null) circle.remove();
@@ -75,17 +69,21 @@ public class SearchMapFragment extends MapFragment {
         });
 
         mMap.setOnMarkerClickListener(marker -> {
+            //If the marker is the search marker it activates the bottomMapSearch method
             if (marker.equals(marker_M)) bottomMapSearch(marker);
+                //If the marker is a parking marker it activates the bottomMapRequest method
             else if (markers_P.contains(marker)) bottomMapRequest(marker);
             return false;
         });
-
+  //If a search marker is saved it reloads it
         if (bottomMapSearchVisible && marker_M != null) {
             bottomMapSearch(marker_M);
         }
+  //If a circle is saved it reloads it
         if (circleCenter != null) {
             circle = mMap.addCircle(circleOptions.center(circleCenter));
         }
+    //It creates a marker for each parking spot and adds it
         for (ParkingSpot p : parkingSpots) {
             markers_P.add(makeMarker(p));
         }
@@ -99,10 +97,9 @@ public class SearchMapFragment extends MapFragment {
         }
     }
 
-    /**
-     * @param parkingSpot , μεθοδος που καλειτε για να προσθεσει το σημειο εντος κυκλου ως πρασινο marker
-     * @return marker
-     */
+
+    // This method is called to add a spot inside the circle as a green  marker
+
     private Marker makeMarker(ParkingSpot parkingSpot) {
         LatLng ParkingLocationXY = new LatLng(parkingSpot.getLatitude(), parkingSpot.getLongitude());
         MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
@@ -114,12 +111,13 @@ public class SearchMapFragment extends MapFragment {
         return marker;
     }
 
-    /**
-     * @param marker μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
-     *               που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker) μαζι με την ωρα επιλογης,
-     *               αλλιως στελνει με ωρα συστηματος για επιτυχη αναζητηση εφμανιζεται ενας κυκλος
-     *               ακτινας 1km γυρο απο το marker και μεσα σε αυτο
-     */
+
+    //   This method calls the SupabaseManager method that checks if there parking spots within a 1000 m radius from the search marker
+    //   for the dateTime provided( if it is not provided it uses the system's) and if the database method is successful it
+    //   draws the parking spot markers
+     // and removes the circle. If the database method is not successful it provides an error message
+
+
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
@@ -136,38 +134,36 @@ public class SearchMapFragment extends MapFragment {
 
             @Override
             public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ..." +
-                        " Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something went wrong ..." +
+                        " Please check your connection", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    /**
-     * @param marker , παίρνει τις συντεταγμενες απο το marker και καλεί τη βάση δεδομένων
-     *               για να προσθεσει αιτημα αναζητησης με τις συντεταγμενες του marker
-     */
+    // This method calls the SupabaseManager method addRequest with argument the id of the parking spot. It creates a request
+    // that will be sent to the owner of the spot
+
+
     private void addRequest(Marker marker) {
         int id = ((ParkingSpot) marker.getTag()).getId();
         SupabaseManager.addRequest(id, new JavaResultCallback<>() {
             @Override
             public void onSuccess(String value) {
-                Toast.makeText(getContext(), "Εστάλει αίτημα", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Request sent", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(@NonNull Throwable exception) {
                 System.out.println(exception.getMessage());
-                Toast.makeText(getContext(), "Αδυναμία Εκτέλεσης ... " +
-                        "Ελέγξτε τη σύνδεσή σας", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something went wrong ... " +
+                        "Please check your connection", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    /**
-     * @param marker popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
-     *               που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
-     *               αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
-     */
+
+    //A pop up menu with a button that a user presses to activate the checkParking method
+
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext())
@@ -176,8 +172,8 @@ public class SearchMapFragment extends MapFragment {
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
 
-        title.setText("Αναζήτηση παρκινγκ σε ακτίνα 1km από marker");
-        actionButton.setText("Αναζήτηση");
+        title.setText(R.string.searching_parking_spot);
+        actionButton.setText(R.string.searching);
         actionButton.setOnClickListener(v -> {
             bottomDialog.cancel();
             checkParking(marker);
@@ -192,9 +188,7 @@ public class SearchMapFragment extends MapFragment {
         bottomMapSearchVisible = true;
     }
 
-    /**
-     * @param marker
-     */
+    //A pop up menu with a button that a user presses to create a request using the addRequest method
     private void bottomMapRequest(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).
@@ -204,7 +198,7 @@ public class SearchMapFragment extends MapFragment {
         Button actionButton = view.findViewById(R.id.button_MAP);
 
         title.setText(marker.getTitle());
-        actionButton.setText("Κάνε αίτημα");
+        actionButton.setText(R.string.make_a_request);
         actionButton.setOnClickListener(v -> {
             bottomDialog.dismiss();
             addRequest(marker);
@@ -221,9 +215,8 @@ public class SearchMapFragment extends MapFragment {
         requestId = ((ParkingSpot) marker.getTag()).getId();
     }
 
-    /**
-     * @param outState Bundle in which to place your saved state.
-     */
+    //Bundle in which to place your saved state.
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -35,14 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         this.selectedTab = selectedTab;
     }
 
-    /**
-     *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
-     * @param viewType The view type of the new View.
-     *
-     * @return
-     */
+
     @NonNull
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,12 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return new ViewHolder(v);
     }
 
-    /**
-     *
-     * @param holder The ViewHolder which should be updated to represent the contents of the
-     *        item at the given position in the data set.
-     * @param position The position of the item within the adapter's data set.
-     */
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
         // if (titles != null && !titles.isEmpty() && position < titles.size()) {
@@ -65,28 +53,34 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         //     holder.itemTitle.setText("No data available"); // Prevent crash
         // }
 
+        //Checks if the titles, details and images are null
+
         if (titles != null && details != null && images != null &&
                 position < titles.size() && position < details.size() && position < images.size()) {
 
-
+   //If the titles details and images are the same size and one is not empty then they can safely be set to viewholder
             if (titles.size() == details.size() && details.size() == images.size() && !images.isEmpty()) {
                 holder.itemTitle.setText(titles.get(position));
                 holder.itemDetail.setText(details.get(position));
                 holder.itemImage.setImageResource(images.get(position));
             } else {
-                holder.itemTitle.setText("Error: Mismatched data");
+         //If they are mismatched it prints the error
+                holder.itemTitle.setText(R.string.error_mismatched_data);
             }
-        } else {
-            holder.itemTitle.setText("Error: No data available");
+        } else { //If a list is null it prints an error
+            holder.itemTitle.setText(R.string.error_no_data_available);
             holder.itemDetail.setText("");
             holder.itemImage.setImageResource(R.drawable.crossmark_svgrepo_com); // Provide a fallback image
         }
 
         if (this.selectedTab == 0) {
+            //If the tab viewed is the requestSent then the buttons are set to not visible because the user shouldn't be able to accept ir reject his requests
             holder.btn_accept.setVisibility(View.GONE);
             holder.btn_reject.setVisibility(View.GONE);
         }
         if (this.selectedTab == 1) {
+   //If the tab viewed is the requestsReceived then if the status of the requests is accepted or rejected then the buttons are set to not visible
+   // (because the owner already accepted or rejected) else the buttons are visible
             if (images != null) {
                 if (statuses.get(position) == RequestStatus.PENDING) {
                     holder.itemImage.setVisibility(View.GONE);
@@ -100,15 +94,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
     }
 
-    /**
-     *
-     * @param holder
-     * @param position
-     */
+    //This method uses the SupabaseManager method that sets a request to be accepted
     public void acceptRequest(RecyclerAdapter.ViewHolder holder, int position) {
         SupabaseManager.acceptRequest(ids.get(position), new JavaResultCallback<>() {
             @Override
             public void onSuccess(String value) {
+               //If the the method worked it sets the accepted image visible and set the buttons to not visible
                 holder.btn_accept.setVisibility(View.GONE);
                 holder.btn_reject.setVisibility(View.GONE);
                 holder.itemImage.setImageResource(R.drawable.checkmark_svgrepo_com);
@@ -122,15 +113,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         });
     }
 
-    /**
-     *
-     * @param holder
-     * @param position
-     */
+
+    //This method uses the SupabaseManager method that sets a request to be accepted
+
     public void rejectRequest(RecyclerAdapter.ViewHolder holder, int position) {
         SupabaseManager.rejectRequest(ids.get(position), new JavaResultCallback<>() {
             @Override
             public void onSuccess(String value) {
+                //If the the method worked it sets the rejected image visible and set the buttons to not visible
                 holder.btn_accept.setVisibility(View.GONE);
                 holder.btn_reject.setVisibility(View.GONE);
                 holder.itemImage.setImageResource(R.drawable.crossmark_svgrepo_com);

@@ -12,11 +12,7 @@ import com.example.parkx.supabase.SupabaseManager;
 public class MainActivity extends AppCompatActivity {
 
     private FragmentManager ftMan;
-
-    /**
-     *
-     * @param savedInstanceState
-     */
+ // This activity holds the fragments of sign in and sign up and after authentication loads the home activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -26,25 +22,17 @@ public class MainActivity extends AppCompatActivity {
         ftMan = getSupportFragmentManager();
     }
 
-    /**
-     *
-     * @param view
-     */
+
     public void goToSignIn(View view) {
         ftMan.beginTransaction().replace(R.id.fragmentContainerView, new SignInFragment()).commit();
     }
 
-    /**
-     *
-     * @param view
-     */
+
     public void goToSignUp(View view) {
         ftMan.beginTransaction().replace(R.id.fragmentContainerView, new SignUpFragment()).commit();
     }
 
-    /**
-     *
-     */
+
     public void goToHome() {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);

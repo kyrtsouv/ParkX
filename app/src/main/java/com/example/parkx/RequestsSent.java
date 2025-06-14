@@ -28,35 +28,31 @@ public class RequestsSent extends Fragment {
     List<Integer> ids = new ArrayList<>();
     List<RequestStatus> statuses = new ArrayList<>();
 
-    /**
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return
-     */
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_sent, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+     //After the view is created the SupabaseManager method getRequestsSent is called
         SupabaseManager.getRequestsSent(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
+
+    //If the database retrieved the spots a string is created with the name of the owner which the current user sent a request to and is added to the titles list
+
                 for (Request request : value) {
                     String title = "You have requested " + request.getOwnerName() + " " + request.getOwnerSurname() + "'s spot at coordinates :";
 
                     titles.add(title);
+      //The coordinates are provided to details list
                     details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
                             java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+
                     ids.add(request.getId());
                     statuses.add(request.getStatus());
+                    //According to the status a suitable icon is added to the images list
                     switch (request.getStatus()) {
 
                         case ACCEPTED:
@@ -76,7 +72,7 @@ public class RequestsSent extends Fragment {
 
             @Override
             public void onError(@NotNull Throwable exception) {
-
+ //If the database method fails it displays an error
 
                 titles.clear();
                 details.clear();

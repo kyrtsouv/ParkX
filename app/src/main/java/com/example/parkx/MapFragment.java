@@ -34,10 +34,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CameraPosition cameraPosition;
     private Button button_date_time;
 
-    /**
-     *
-     * @param context
-     */
+ //Checks if toggleFullscreenListener is implemented
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -48,27 +45,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    /**
-     *
-     * δημιουργει View και συσχέτιση με το fragment_map
-     */
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
-    /**
-     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+       //loads the map
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+       //reloads saved choices
         if (savedInstanceState != null) {
             cameraPosition = savedInstanceState.getParcelable("cameraPosition");
             markerPosition = savedInstanceState.getParcelable("markerPosition");
@@ -79,11 +71,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         button_date_time.setOnClickListener(view1 -> setTime());
     }
 
-    /**
-     * @param googleMap προετοιμασια χαρτη με εστιαση στη περιοχη της Θεσσαλονίκης
-     */
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+    //When the map is ready it focuses on Thessaloniki
         mMap = googleMap;
 
         if (markerPosition != null) {
@@ -99,35 +90,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (cameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
-
+  //if the map is clicked it toggles fullscreen
         mMap.setOnMapClickListener(latLng -> toggleFullscreenListener.onToggleFullscreen());
     }
 
-    /**
-     * @param outState Bundle in which to place your saved state.
-     */
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
         if (mMap != null) {
+            //saves the current camera position
             outState.putParcelable("cameraPosition", mMap.getCameraPosition());
         }
         if (marker_M != null) {
+          //saves the position of the marker
             outState.putParcelable("markerPosition", marker_M.getPosition());
         }
+        //saves the date and time selected
         outState.putSerializable("dateTime", dateTime);
     }
 
-    /**
-     *
-     * Αυτή η μέθοδος όριζει την ώρα και την ημερομηνια στις τοπικά στις αντιστοιχες μεταβλητές
-     * year,month,day και hours,minutes
-     */
+    // This method gets the hour and date from time and date picker assigns them to a local date time and is set as text to the button_date_time
     private void setTime() {
 
         new DatePickerDialog(requireContext(), (datePicker, selectedYear, selectedMonth, selectedDay) -> {
             year = selectedYear;
-            month = selectedMonth + 1; // προσθετω +1 στο μηνα γιατι ξεκιναει απο το 0 (Ιανουαριος=0)
+            month = selectedMonth + 1; // adds 1 because date picker starts at 0 for month
             day = selectedDay;
 
             new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {

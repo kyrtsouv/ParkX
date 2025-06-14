@@ -50,12 +50,7 @@ public class RequestsFragment extends Fragment {
 
     }
 
-    /**
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -88,7 +83,7 @@ public class RequestsFragment extends Fragment {
                     @Override
                     public void onSuccess(String value) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
-                        // αποτρεπω το χρηστη να παει 'πισω' οταν κανει Log out
+                        //The user is not allowed to go back when they log out
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
@@ -100,7 +95,7 @@ public class RequestsFragment extends Fragment {
                 });
             }
         });
-        PageAdapter adapter = new PageAdapter(requireActivity()); // FragmentActivity required
+        PageAdapter adapter = new PageAdapter(requireActivity());
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager,
@@ -113,18 +108,18 @@ public class RequestsFragment extends Fragment {
                             tab.setText("Received");
                             break;
                         case 2:
-                            tab.setText("Parking spots"); // Change this label as needed
+                            tab.setText("Parking spots");
                             break;
                     }
                 }
         ).attach();
 
-        // Add a PageChangeCallback to enable/disable swiping
+        //Adds a PageChangeCallback to enable/disable swiping
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                // Enable swipe on other pages excepts 2 -> Map
+                // Enables swipe on other pages excepts 2 -> Map
                 viewPager.setUserInputEnabled(position != 2);
             }
         });

@@ -29,4 +29,12 @@
     <string name="email_already_in_use">This email is in use. Please choose a different one</string>
     <string name="not_valid_email">Please enter a valid Email</string>
     <string name="log_out">Log out</string>
+    <string name="searching">Searching</string>
+    <string name="searching_parking_spot">Searching parking spot inside a 1000m radius from the marker</string>
+    <string name="make_a_request">Make a request</string>
+    <string name="parking_spot_question">Do you want to add this parking spot ?</string>
+    <string name="add_parking_spot">Add parking spot</string>
+    <string name="parking_spot_added">Parking spot added</string>
+    <string name="error_mismatched_data">Error: Mismatched data</string>
+    <string name="error_no_data_available">Error: No data available</string>
 </resources>

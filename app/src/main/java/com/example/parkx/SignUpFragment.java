@@ -35,11 +35,12 @@ public class SignUpFragment extends Fragment {
     public SignUpFragment() {
     }
 
+  //A method for checking if the email address is valid visually
     public static boolean isValidEmail(String email) {
-        // Simple regex for email validation
+        //Regular expression  for email validation
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
-        // Use String's matches() method to check if the email matches the regex
+        //Use String's matches() method to check if the email matches the regular expression
         return email.matches(emailRegex);
     }
 
@@ -106,24 +107,26 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    /**
-     *
-     */
+//This is the method that is  attached to the sign up button
     public void signUp() {
+     //Sets the progress bar visible for the duration of the registration and sets the button disabled
         progressBar.setVisibility(View.VISIBLE);
         btn_signUp.setEnabled(false);
         String name = et_name.getText().toString();
         String surname = et_surname.getText().toString();
         String email = et_signUpEmail.getText().toString();
         String password = et_signUpPassword.getText().toString();
-
+//If the any fields are empty prints the according error
         if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            //Hides the progress bar and sets the button enabled
             btn_signUp.setEnabled(true);
             progressBar.setVisibility(View.GONE);
             tv_signUpError.setText(R.string.please_fill_in_all_fields);
             return;
         }
+  //Checks if the email address is valid using the previous method and sends the text error to the error field
         if (!isValidEmail(email)) {
+            //Hides the progress bar and sets the button enabled
             btn_signUp.setEnabled(true);
             progressBar.setVisibility(View.GONE);
             tv_signUpError.setText(R.string.not_valid_email);
@@ -132,37 +135,41 @@ public class SignUpFragment extends Fragment {
         }
 
         tv_signUpError.setText("");
-
+//This is the SupabaseManager method for registration
         SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
                     @Override
                     public void onSuccess(@NotNull Unit value) {
+                    //If the registration is successful it hides the progress bar and runs the go to home method of MainActivity
                         progressBar.setVisibility(View.GONE);
                         if (getActivity() instanceof MainActivity) {
                             ((MainActivity) getActivity()).goToHome();
                         }
                     }
 
+      //If the registration is not successful itt handles the error
+
                     @Override
                     public void onError(@NotNull Throwable exception) {
                         btn_signUp.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
-
+//If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
                         if (exception instanceof AuthRestException) {
                             AuthRestException authRestException = (AuthRestException) exception;
                             String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
-
+                            //This is the case of using an email that is registered
                             if (errorCode.equals("UserAlreadyExists")) {
                                 tv_signUpError.setText(R.string.email_already_in_use);
                             } else {
+                                //This is the case of all the other error codes
                                 tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                             }
 
 
                         } else if (exception instanceof IOException) {
-                            // IOException indicates network issues (e.g., no internet connection)
+                            //   //This is the case of IOException that indicates network issues
                             tv_signUpError.setText(R.string.network_error);
                         } else {
-                            // General error handling for other types of exceptions
+                            //This is the  error handling for other types of exceptions
                             tv_signUpError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
                         }
 
