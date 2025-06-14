@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchMapFragment extends MapFragment {
-    private final List<Marker> markers_P = new ArrayList<>();
     private final CircleOptions circleOptions = new CircleOptions().radius(1000).strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3);
+    private final List<Marker> markers_P = new ArrayList<>();
     private List<ParkingSpot> parkingSpots = new ArrayList<>();
     private boolean bottomMapSearchVisible = false;
     private boolean bottomMapRequestVisible = false;
@@ -37,7 +37,6 @@ public class SearchMapFragment extends MapFragment {
     private LatLng circleCenter;
 
     /**
-     *
      * @param view               The View returned by @link #onCreateView(LayoutInflater, ViewGroup, Bundle)
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
@@ -56,7 +55,6 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
      * @param googleMap προετοιμασια χαρτη ορισμος marker και circle
      */
     @Override
@@ -102,9 +100,8 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
-     * @param parkingSpot   , μεθοδος που καλειτε για να προσθεσει το σημειο εντος κυκλου ως πρασινο marker
-     * @return  marker
+     * @param parkingSpot , μεθοδος που καλειτε για να προσθεσει το σημειο εντος κυκλου ως πρασινο marker
+     * @return marker
      */
     private Marker makeMarker(ParkingSpot parkingSpot) {
         LatLng ParkingLocationXY = new LatLng(parkingSpot.getLatitude(), parkingSpot.getLongitude());
@@ -118,11 +115,10 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
-     * @param marker    μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
-     *                  που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker) μαζι με την ωρα επιλογης,
-     *                  αλλιως στελνει με ωρα συστηματος για επιτυχη αναζητηση εφμανιζεται ενας κυκλος
-     *                  ακτινας 1km γυρο απο το marker και μεσα σε αυτο
+     * @param marker μεθοδος ελεγχου παρκινγ που καλει απο τη βαση τις συντεταγμενες ολων των marker
+     *               που ειναι σε ακτινα 1000μ απο το σημειο του χρηστη (Marker) μαζι με την ωρα επιλογης,
+     *               αλλιως στελνει με ωρα συστηματος για επιτυχη αναζητηση εφμανιζεται ενας κυκλος
+     *               ακτινας 1km γυρο απο το marker και μεσα σε αυτο
      */
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
@@ -147,7 +143,6 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
      * @param marker , παίρνει τις συντεταγμενες απο το marker και καλεί τη βάση δεδομένων
      *               για να προσθεσει αιτημα αναζητησης με τις συντεταγμενες του marker
      */
@@ -169,16 +164,14 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
-     * @param marker     popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
-     *                   που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
-     *                   αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
+     * @param marker popup μενου απο κατω που καλει απο τη βαση τις συντεταγμενες του marker
+     *               που επελεξε ο χρηστης μαζι με την ημερομηνια/ωρα που επελεξε
+     *               αν ο χρηστης δεν εχει επιλεξει ωρα τοτε καλει με την τοπικη ωρα του συστηματος
      */
-    @SuppressLint("SetTextI18n")
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext())
-                    .inflate(R.layout.bottom_map, null);
+                .inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -200,7 +193,6 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
      * @param marker
      */
     private void bottomMapRequest(Marker marker) {
@@ -230,7 +222,6 @@ public class SearchMapFragment extends MapFragment {
     }
 
     /**
-     *
      * @param outState Bundle in which to place your saved state.
      */
     @Override

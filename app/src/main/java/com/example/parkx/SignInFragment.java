@@ -41,13 +41,13 @@ public class SignInFragment extends Fragment {
     }
 
     /**
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,10 +55,9 @@ public class SignInFragment extends Fragment {
     }
 
     /**
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -76,27 +75,18 @@ public class SignInFragment extends Fragment {
             tv_signInError.setText(savedInstanceState.getString("error", ""));
         }
 
-        btn_signIn.setOnClickListener(v -> SignIn());
-
+        btn_signIn.setOnClickListener(v -> signIn());
     }
 
     /**
      *
      */
-    public void SignIn() {
-
-
+    public void signIn() {
         String email = et_signInEmail.getText().toString();
         String password = et_signInPassword.getText().toString();
         btn_signIn.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
 
-        /// change this for auto sign_in or not
-        boolean debug = true;
-        if (debug) {
-            email = "test@email.com";
-            password = "password";
-        }
 
         if (email.isEmpty() || password.isEmpty()) {
             tv_signInError.setText(R.string.please_fill_in_all_fields);

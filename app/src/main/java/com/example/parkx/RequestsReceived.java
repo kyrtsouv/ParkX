@@ -1,6 +1,5 @@
 package com.example.parkx;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +47,6 @@ public class RequestsReceived extends Fragment {
 
 
         SupabaseManager.getRequestsReceived(new JavaResultCallback<>() {
-            @SuppressLint("DefaultLocale")
             @Override
             public void onSuccess(List<Request> value) {
 
