@@ -167,7 +167,7 @@ public class SearchMapFragment extends MapFragment {
         Button actionButton = view.findViewById(R.id.button_MAP);
 
         title.setText(R.string.searching_parking_spot);
-        actionButton.setText(R.string.searching);
+        actionButton.setText(R.string.search);
         actionButton.setOnClickListener(v -> {
             bottomDialog.cancel();
             checkParking(marker);
