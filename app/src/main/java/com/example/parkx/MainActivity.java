@@ -9,16 +9,16 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.parkx.supabase.SupabaseManager;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements HomeListener {
     private FragmentManager ftMan;
- // This activity holds the fragments of sign in and sign up and after authentication loads the home activity
+
+    // This activity holds the fragments of sign in and sign up
+    // It initializes the Kotlin SupabaseManager which is used for the communication with the Supabase backend
+    // and handles the navigation between the fragments and the home activity when the user is authenticated
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         SupabaseManager.init();
-
         ftMan = getSupportFragmentManager();
     }
 
@@ -36,5 +36,6 @@ public class MainActivity extends AppCompatActivity {
     public void goToHome() {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
+        finish();
     }
 }

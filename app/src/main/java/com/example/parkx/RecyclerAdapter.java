@@ -25,6 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private final List<RequestStatus> statuses;
     private final int selectedTab;
 
+    // Constructor that initializes the adapter with the lists of titles, details, images, ids, statuses and the selected tab
     public RecyclerAdapter(List<String> titles, List<String> details, List<Integer> images, List<Integer> ids, List<RequestStatus> statuses, int selectedTab) {
         this.titles = titles;
         this.details = details;
@@ -35,36 +36,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         this.selectedTab = selectedTab;
     }
 
-
     @NonNull
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_layout, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_layout, parent, false));
     }
 
-
+    // This method binds the data to the view holder. It checks if the lists are not null and
+    // if they are of the same size before setting the data to the view holder.
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
-        // if (titles != null && !titles.isEmpty() && position < titles.size()) {
-        //     holder.itemTitle.setText(titles.get(position));
-        // } else {
-        //     holder.itemTitle.setText("No data available"); // Prevent crash
-        // }
-
-        //Checks if the titles, details and images are null
-
         if (titles != null && details != null && images != null &&
                 position < titles.size() && position < details.size() && position < images.size()) {
 
-   //If the titles details and images are the same size and one is not empty then they can safely be set to viewholder
+            //If the titles details and images are the same size and one is not empty then they can safely be set to viewholder
             if (titles.size() == details.size() && details.size() == images.size() && !images.isEmpty()) {
                 holder.itemTitle.setText(titles.get(position));
                 holder.itemDetail.setText(details.get(position));
                 holder.itemImage.setImageResource(images.get(position));
             } else {
-         //If they are mismatched it prints the error
+                //If they are mismatched it prints the error
                 holder.itemTitle.setText(R.string.error_mismatched_data);
             }
         } else { //If a list is null it prints an error
@@ -74,13 +66,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
 
         if (this.selectedTab == 0) {
-            //If the tab viewed is the requestSent then the buttons are set to not visible because the user shouldn't be able to accept ir reject his requests
+            //If the tab viewed is the requestSent then the buttons are set to not visible because the user shouldn't be able to accept or reject his requests
             holder.btn_accept.setVisibility(View.GONE);
             holder.btn_reject.setVisibility(View.GONE);
         }
         if (this.selectedTab == 1) {
-   //If the tab viewed is the requestsReceived then if the status of the requests is accepted or rejected then the buttons are set to not visible
-   // (because the owner already accepted or rejected) else the buttons are visible
+            // If the tab viewed is the requestsReceived then if the status of the requests is accepted or rejected then the buttons are set to not visible
+            // (because the owner already accepted or rejected) else the buttons are visible
             if (images != null) {
                 if (statuses.get(position) == RequestStatus.PENDING) {
                     holder.itemImage.setVisibility(View.GONE);
@@ -99,7 +91,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         SupabaseManager.acceptRequest(ids.get(position), new JavaResultCallback<>() {
             @Override
             public void onSuccess(String value) {
-               //If the the method worked it sets the accepted image visible and set the buttons to not visible
+                //If the the method worked it sets the accepted image visible and set the buttons to not visible
                 holder.btn_accept.setVisibility(View.GONE);
                 holder.btn_reject.setVisibility(View.GONE);
                 holder.itemImage.setImageResource(R.drawable.checkmark_svgrepo_com);
@@ -114,8 +106,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
 
-    //This method uses the SupabaseManager method that sets a request to be accepted
-
+    //This method uses the SupabaseManager method that sets a request to be rejected
     public void rejectRequest(RecyclerAdapter.ViewHolder holder, int position) {
         SupabaseManager.rejectRequest(ids.get(position), new JavaResultCallback<>() {
             @Override
@@ -140,7 +131,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     //Class that holds the items to be displayed (Views in card_layout)
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView itemImage;
         TextView itemTitle;

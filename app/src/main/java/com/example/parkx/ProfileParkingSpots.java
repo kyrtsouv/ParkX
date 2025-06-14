@@ -19,11 +19,6 @@ import java.util.List;
 
 public class ProfileParkingSpots extends MapFragment {
 
-
-
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -31,10 +26,8 @@ public class ProfileParkingSpots extends MapFragment {
         btn.setVisibility(View.INVISIBLE);
     }
 
-    // The map is prepared and the SupabaseManager method for spot retrieval is called. They are then drawn on the map as green markers
-
-
-
+    // The map is prepared and the SupabaseManager method for retrieval of the user's spots is called.
+    // They are then drawn on the map as green markers.
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
@@ -46,15 +39,13 @@ public class ProfileParkingSpots extends MapFragment {
             public void onSuccess(List<ParkingSpot> value) {
                 for (ParkingSpot p : value) {
                     LatLng temp = new LatLng(p.getLatitude(), p.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(temp).
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    googleMap.addMarker(new MarkerOptions().position(temp).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "There was an error with retrieving" +
-                        " ... Please check your connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "There was an error with retrieving" + " ... Please check your connection", Toast.LENGTH_SHORT).show();
             }
         });
 

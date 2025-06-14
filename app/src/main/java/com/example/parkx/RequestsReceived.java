@@ -30,6 +30,7 @@ public class RequestsReceived extends Fragment {
     List<RequestStatus> statuses = new ArrayList<>();
 
 
+    // This method is called when the fragment's view is created. It inflates the layout for the fragment and sets up the RecyclerView to display requests received by the user.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_received, container, false);
@@ -37,7 +38,7 @@ public class RequestsReceived extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-  //The SupabaseManager getRequestsReceived method is called so that the user views the requests that are sent to them
+        //The SupabaseManager getRequestsReceived method is called so that the user views the requests that are sent to them
         SupabaseManager.getRequestsReceived(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
@@ -48,12 +49,12 @@ public class RequestsReceived extends Fragment {
                             " has requested your spot at coordinates : ";
 
                     titles.add(title);
-                 //The coordinates are provided to the details
+                    //The coordinates are provided to the details
                     details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
                             java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                     ids.add(request.getId());
                     statuses.add(request.getStatus());
-                //An image is chosen so that it suits the status of the request
+                    //An image is chosen so that it suits the status of the request
                     switch (request.getStatus()) {
                         case ACCEPTED:
                             images.add(R.drawable.checkmark_svgrepo_com);
@@ -72,7 +73,7 @@ public class RequestsReceived extends Fragment {
 
             @Override
             public void onError(@NotNull Throwable exception) {
-              //If the retrieval is not successful it shows an error
+                //If the retrieval is not successful it shows an error
                 titles.clear();
                 details.clear();
                 images.clear();

@@ -1,5 +1,6 @@
 package com.example.parkx;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +32,28 @@ public class SignUpFragment extends Fragment {
     TextView tv_signUpError;
     ProgressBar progressBar;
     Button btn_signUp;
+    HomeListener homeListener;
 
-    public SignUpFragment() {
-    }
-
-  //A method for checking if the email address is valid visually
+    //A method for checking if the email address is valid by matching it to a regular expression
     public static boolean isValidEmail(String email) {
-        //Regular expression  for email validation
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
-        //Use String's matches() method to check if the email matches the regular expression
         return email.matches(emailRegex);
     }
 
+    // This method is called when the fragment is attached to the activity.
+    // It checks if the activity implements the HomeListener interface, which is used to navigate to the home screen after successful registration.
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            homeListener = (HomeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context + " must implement HomeListener");
+        }
+
+    }
+
+    // This method saves the state of the EditTexts and TextView when the fragment is paused or stopped, so that it can be restored later.
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -55,34 +65,12 @@ public class SignUpFragment extends Fragment {
         outState.putString("error", tv_signUpError.getText().toString());
     }
 
-    /**
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    /**
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
-     *                           but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sign_up, container, false);
     }
 
-    /**
-     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+    // This method is called after the view is created and restores the state of the details EditTexts and error TextView if there is a saved instance state and sets the onClickListener for the sign up button.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -104,19 +92,19 @@ public class SignUpFragment extends Fragment {
         }
 
         btn_signUp.setOnClickListener(v -> signUp());
-
     }
 
-//This is the method that is  attached to the sign up button
+    //This is the method that is  attached to the sign up button
     public void signUp() {
-     //Sets the progress bar visible for the duration of the registration and sets the button disabled
+        //Sets the progress bar visible for the duration of the registration and sets the button disabled
         progressBar.setVisibility(View.VISIBLE);
         btn_signUp.setEnabled(false);
         String name = et_name.getText().toString();
         String surname = et_surname.getText().toString();
         String email = et_signUpEmail.getText().toString();
         String password = et_signUpPassword.getText().toString();
-//If the any fields are empty prints the according error
+
+        //If the any fields are empty prints the according error
         if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
             //Hides the progress bar and sets the button enabled
             btn_signUp.setEnabled(true);
@@ -124,7 +112,8 @@ public class SignUpFragment extends Fragment {
             tv_signUpError.setText(R.string.please_fill_in_all_fields);
             return;
         }
-  //Checks if the email address is valid using the previous method and sends the text error to the error field
+
+        //Checks if the email address is valid using the previous method and sends the text error to the error field
         if (!isValidEmail(email)) {
             //Hides the progress bar and sets the button enabled
             btn_signUp.setEnabled(true);
@@ -135,47 +124,40 @@ public class SignUpFragment extends Fragment {
         }
 
         tv_signUpError.setText("");
-//This is the SupabaseManager method for registration
+
+        //This is the SupabaseManager method for registration
         SupabaseManager.signUp(email, password, name, surname, new JavaResultCallback<>() {
-                    @Override
-                    public void onSuccess(@NotNull Unit value) {
-                    //If the registration is successful it hides the progress bar and runs the go to home method of MainActivity
-                        progressBar.setVisibility(View.GONE);
-                        if (getActivity() instanceof MainActivity) {
-                            ((MainActivity) getActivity()).goToHome();
-                        }
+            @Override
+            public void onSuccess(@NotNull Unit value) {
+                //If the registration is successful it hides the progress bar and runs the go to home method of MainActivity
+                progressBar.setVisibility(View.GONE);
+                homeListener.goToHome();
+            }
+
+            //If the registration is not successful it handles the error
+            @Override
+            public void onError(@NotNull Throwable exception) {
+                btn_signUp.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
+                //If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
+                if (exception instanceof AuthRestException) {
+                    AuthRestException authRestException = (AuthRestException) exception;
+                    String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
+                    //This is the case of using an email that is registered
+                    if (errorCode.equals("UserAlreadyExists")) {
+                        tv_signUpError.setText(R.string.email_already_in_use);
+                    } else {
+                        //This is the case of all the other error codes
+                        tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                     }
-
-      //If the registration is not successful itt handles the error
-
-                    @Override
-                    public void onError(@NotNull Throwable exception) {
-                        btn_signUp.setEnabled(true);
-                        progressBar.setVisibility(View.GONE);
-//If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
-                        if (exception instanceof AuthRestException) {
-                            AuthRestException authRestException = (AuthRestException) exception;
-                            String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
-                            //This is the case of using an email that is registered
-                            if (errorCode.equals("UserAlreadyExists")) {
-                                tv_signUpError.setText(R.string.email_already_in_use);
-                            } else {
-                                //This is the case of all the other error codes
-                                tv_signUpError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
-                            }
-
-
-                        } else if (exception instanceof IOException) {
-                            //   //This is the case of IOException that indicates network issues
-                            tv_signUpError.setText(R.string.network_error);
-                        } else {
-                            //This is the  error handling for other types of exceptions
-                            tv_signUpError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
-                        }
-
-                    }
+                } else if (exception instanceof IOException) {
+                    //   //This is the case of IOException that indicates network issues
+                    tv_signUpError.setText(R.string.network_error);
+                } else {
+                    //This is the  error handling for other types of exceptions
+                    tv_signUpError.setText(String.format("%s%s", getString(R.string.generic_error), exception.getMessage()));
                 }
-
-        );
+            }
+        });
     }
 }

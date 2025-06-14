@@ -18,21 +18,21 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+
 public class PostMapFragment extends MapFragment {
     private boolean bottomMapPostVisible = false;
 
 
-    @SuppressLint("CutPasteId")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-       //It loads the visibility state of bottomMapPost
+        //It loads the visibility state of bottomMapPost
         if (savedInstanceState != null)
             bottomMapPostVisible = savedInstanceState.getBoolean("bottomMapPostVisible", false);
     }
 
-    //It prepares the map by removing the previous marker creates a new one (and sets its click listener) with the new coordinates and sets the click
-
+    //This method is called when the map is ready to be used. It sets up the map with a long click listener to add a marker at the clicked location. and removes the previous marker if it exists.
+    //It also sets up a marker click listener to show a bottom sheet dialog with options to add a parking spot and shows the bottom sheet dialog if it was previously visible.
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
@@ -56,9 +56,7 @@ public class PostMapFragment extends MapFragment {
     }
 
 
-    //   Pop up menu that sends the coordinates of the marker that the user made with the chosen dateTime ( if no dateTime is chosen it uses the system's)
-    //  to the database
-
+    //  Pop up menu that sends the coordinates of the marker that the user made with the chosen dateTime to the database
     public void bottomMapPost(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
@@ -72,7 +70,7 @@ public class PostMapFragment extends MapFragment {
             bottomDialog.cancel();
             LatLng temp = marker.getPosition();
 
-        //The method publish spot is called with the coordinates and dateTime
+            //The method publish spot is called with the coordinates and dateTime
             SupabaseManager.publishSpot(temp.latitude, temp.longitude, dateTime, new JavaResultCallback<>() {
                 @Override
                 public void onSuccess(String value) {
@@ -81,7 +79,7 @@ public class PostMapFragment extends MapFragment {
 
                 @Override
                 public void onError(@NonNull Throwable exception) {
-                    Toast.makeText(getContext(), "Something went wrong ... lease check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Something went wrong ... please check your connection", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -92,6 +90,7 @@ public class PostMapFragment extends MapFragment {
         bottomMapPostVisible = true;
     }
 
+    // This method saves the visibility state of the bottom sheet dialog when the fragment is paused or stopped.
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

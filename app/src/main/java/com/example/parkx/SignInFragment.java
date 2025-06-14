@@ -1,5 +1,6 @@
 package com.example.parkx;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,9 @@ public class SignInFragment extends Fragment {
     TextView tv_signInError;
     Button btn_signIn;
     ProgressBar progressBar;
+    HomeListener homeListener;
 
-
+    //This method saves the state of the EditTexts and TextView when the fragment is paused or stopped, so that it can be restored later.
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -40,25 +42,24 @@ public class SignInFragment extends Fragment {
         outState.putString("error", tv_signInError.getText().toString());
     }
 
-    /**
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
-     *                           but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+    //This method is called when the fragment is attached to the activity.
+    //It checks if the activity implements the HomeListener interface, which is used to navigate to the home screen after successful sign-in.
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            homeListener = (HomeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context + " must implement HomeListener");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sign_in, container, false);
     }
 
-    /**
-     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+    //This method is called after the view is created and restores the state of the EditTexts and TextView if there is a saved instance state and sets the onClickListener for the sign in button.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -85,12 +86,10 @@ public class SignInFragment extends Fragment {
         String password = et_signInPassword.getText().toString();
 
         //After the login button is pressed the progress bar becomes visible (and will be for the duration of the database authentication) and the button becomes not clickable
-
         btn_signIn.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
 
         //Checks if the email and password are empty and if they are prints the error accordingly
-
         if (email.isEmpty() || password.isEmpty()) {
             tv_signInError.setText(R.string.please_fill_in_all_fields);
             btn_signIn.setEnabled(true);
@@ -100,34 +99,30 @@ public class SignInFragment extends Fragment {
 
         tv_signInError.setText("");
 
-//Performs sign in with the SupabaseManager class
-
+        //Performs sign in with the SupabaseManager class
         SupabaseManager.signIn(email, password, new JavaResultCallback<>() {
             @Override
             public void onSuccess(@NotNull Unit value) {
-
- //If the login is successful it hides the progress bar and it runs the go to home method of MainActivity
-
+                //If the login is successful it hides the progress bar and it runs the go to home method of MainActivity
                 progressBar.setVisibility(View.GONE);
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).goToHome();
-                }
+                homeListener.goToHome();
             }
-//If the login is not successful it handles the errors
+
+            //If the login is not successful it handles the errors
             @Override
             public void onError(@NotNull Throwable exception) {
-           //In case of an error it hides the progress bar (since the authentication has stopped) and sets the sign in button enabled again
+                //In case of an error it hides the progress bar (since the authentication has stopped) and sets the sign in button enabled again
                 btn_signIn.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-//If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
+                //If the the exception is an instance of AuthRestException it uses error codes provided by Supabase
                 if (exception instanceof AuthRestException) {
                     AuthRestException authRestException = (AuthRestException) exception;
                     String errorCode = (authRestException.getErrorCode() != null) ? authRestException.getErrorCode().name() : "UNKNOWN_ERROR";
-            //This is the  case of invalid credentials
+                    //This is the  case of invalid credentials
                     if (errorCode.equals("InvalidCredentials")) {
                         tv_signInError.setText(R.string.invalid_credentials);
                     } else {
-            //This is the case of all the other error codes
+                        //This is the case of all the other error codes
                         tv_signInError.setText(String.format("%s%s", getString(R.string.authRest_generic_error), errorCode));
                     }
                 } else if (exception instanceof IOException) {

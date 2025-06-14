@@ -8,12 +8,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class PageAdapter extends FragmentStateAdapter {
 
-
     public PageAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
-
+    // This method creates a new fragment for each tab in the ViewPager2.
+    // The available fragments are RequestsSent, RequestsReceived, and ProfileParkingSpots.
     @NonNull
     @Override
     public Fragment createFragment(int position) {

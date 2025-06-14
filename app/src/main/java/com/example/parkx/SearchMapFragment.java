@@ -26,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SearchMapFragment extends MapFragment {
     private final CircleOptions circleOptions = new CircleOptions().radius(1000).strokeColor(Color.CYAN).fillColor(0x220000FF).strokeWidth(3);
     private final List<Marker> markers_P = new ArrayList<>();
@@ -36,7 +37,7 @@ public class SearchMapFragment extends MapFragment {
     private Circle circle = null;
     private LatLng circleCenter;
 
-//If the view  non-null, this fragment is  re-constructed from a previous saved state as given here.
+    // This method is called when the fragment's view is created. It restores the visibility state of the bottom map dialog for search or request and the ID of the request, the circle center and parking spots from the saved instance state.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -44,17 +45,18 @@ public class SearchMapFragment extends MapFragment {
         if (savedInstanceState != null) {
             bottomMapSearchVisible = savedInstanceState.getBoolean("bottomMapSearchVisible", false);
             bottomMapRequestVisible = savedInstanceState.getBoolean("bottomMapRequestVisible", false);
+            requestId = savedInstanceState.getInt("requestId", -1);
             circleCenter = savedInstanceState.getParcelable("circleCenter");
             parkingSpots = (List<ParkingSpot>) savedInstanceState.getSerializable("parkingSpots");
-            requestId = savedInstanceState.getInt("requestId", -1);
         }
     }
 
-    //It prepares map and assigns marker and circle
+    // This method is called when the map is ready to be used.
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         super.onMapReady(googleMap);
- //Sets a long click listener that places a marker that will be used for search
+        // Sets a long click listener that places a marker that will be used for search
+        // and removes the previous marker and circle if they exist.
         mMap.setOnMapLongClickListener(latLng -> {
             if (marker_M != null) marker_M.remove();
             if (circle != null) circle.remove();
@@ -68,25 +70,27 @@ public class SearchMapFragment extends MapFragment {
             marker_M = mMap.addMarker(new MarkerOptions().position(latLng));
         });
 
+        // Sets a marker click listener that activates the bottomMapSearch method if the marker is the search marker
+        // or the bottomMapRequest method if the marker is a parking spot marker.
         mMap.setOnMarkerClickListener(marker -> {
-            //If the marker is the search marker it activates the bottomMapSearch method
             if (marker.equals(marker_M)) bottomMapSearch(marker);
-                //If the marker is a parking marker it activates the bottomMapRequest method
             else if (markers_P.contains(marker)) bottomMapRequest(marker);
             return false;
         });
-  //If a search marker is saved it reloads it
+
+        //If a bottom map search dialog was previously visible, it reopens it with the search marker.
         if (bottomMapSearchVisible && marker_M != null) {
             bottomMapSearch(marker_M);
         }
-  //If a circle is saved it reloads it
+        //If a circle is saved it reloads it
         if (circleCenter != null) {
             circle = mMap.addCircle(circleOptions.center(circleCenter));
         }
-    //It creates a marker for each parking spot and adds it
+        //It creates a marker for each parking spot and adds it
         for (ParkingSpot p : parkingSpots) {
             markers_P.add(makeMarker(p));
         }
+        //If a bottom map request dialog was previously visible, it reopens it with the parking spot marker that matches the request ID.
         if (bottomMapRequestVisible && requestId != -1) {
             for (Marker marker : markers_P) {
                 if (((ParkingSpot) marker.getTag()).getId() == requestId) {
@@ -98,12 +102,10 @@ public class SearchMapFragment extends MapFragment {
     }
 
 
-    // This method is called to add a spot inside the circle as a green  marker
-
+    // This method is called to add a spot inside the circle as a green marker
     private Marker makeMarker(ParkingSpot parkingSpot) {
         LatLng ParkingLocationXY = new LatLng(parkingSpot.getLatitude(), parkingSpot.getLongitude());
-        MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        MarkerOptions ParkingMarker = new MarkerOptions().position(ParkingLocationXY).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         Marker marker = mMap.addMarker(ParkingMarker);
         assert marker != null;
@@ -112,12 +114,10 @@ public class SearchMapFragment extends MapFragment {
     }
 
 
-    //   This method calls the SupabaseManager method that checks if there parking spots within a 1000 m radius from the search marker
-    //   for the dateTime provided( if it is not provided it uses the system's) and if the database method is successful it
-    //   draws the parking spot markers
-     // and removes the circle. If the database method is not successful it provides an error message
-
-
+    //   This method calls the SupabaseManager method that checks if there are parking spots from other users within a 1000 m radius from the search marker
+    //   for the approximate dateTime provided and if the database method is successful it
+    //   draws the parking spot markers  and removes the circle.
+    //   If the database method is not successful it provides an error message.
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
@@ -134,16 +134,13 @@ public class SearchMapFragment extends MapFragment {
 
             @Override
             public void onError(@NonNull Throwable exception) {
-                Toast.makeText(getContext(), "Something went wrong ..." +
-                        " Please check your connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something went wrong ..." + " Please check your connection", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // This method calls the SupabaseManager method addRequest with argument the id of the parking spot. It creates a request
-    // that will be sent to the owner of the spot
-
-
+    // This method calls the SupabaseManager method addRequest with argument the id of the parking spot.
+    // It creates a request that will be sent to the owner of the spot.
     private void addRequest(Marker marker) {
         int id = ((ParkingSpot) marker.getTag()).getId();
         SupabaseManager.addRequest(id, new JavaResultCallback<>() {
@@ -155,19 +152,16 @@ public class SearchMapFragment extends MapFragment {
             @Override
             public void onError(@NonNull Throwable exception) {
                 System.out.println(exception.getMessage());
-                Toast.makeText(getContext(), "Something went wrong ... " +
-                        "Please check your connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something went wrong ... " + "Please check your connection", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-    //A pop up menu with a button that a user presses to activate the checkParking method
-
+    //A pop up menu with a button that a user presses to search for parking spots using the checkParking method
     private void bottomMapSearch(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -179,9 +173,7 @@ public class SearchMapFragment extends MapFragment {
             checkParking(marker);
         });
 
-        bottomDialog.setOnCancelListener(dialog -> {
-            bottomMapSearchVisible = false;
-        });
+        bottomDialog.setOnCancelListener(dialog -> bottomMapSearchVisible = false);
         bottomDialog.setContentView(view);
         bottomDialog.getBehavior().setPeekHeight(1000);
         bottomDialog.show();
@@ -191,8 +183,7 @@ public class SearchMapFragment extends MapFragment {
     //A pop up menu with a button that a user presses to create a request using the addRequest method
     private void bottomMapRequest(Marker marker) {
         BottomSheetDialog bottomDialog = new BottomSheetDialog(requireContext());
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).
-                inflate(R.layout.bottom_map, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_map, null);
 
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
@@ -215,8 +206,7 @@ public class SearchMapFragment extends MapFragment {
         requestId = ((ParkingSpot) marker.getTag()).getId();
     }
 
-    //Bundle in which to place your saved state.
-
+    // This method saves the visibility state of the bottom sheet dialogs for search and request, the request ID, the circle center, and the list of parking spots when the fragment is paused or stopped.
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

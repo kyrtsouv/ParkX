@@ -9,13 +9,12 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity implements MapFragment.ToggleFullscreenListener {
-
     private Fragment selectedFragment = new SearchMapFragment();
     private BottomNavigationView bottomNavigationView;
-
     private boolean isFullscreen = false;
 
-    
+    // This activity holds the fragments of the home screen
+    // It initializes the BottomNavigationView and handles the navigation between the fragments
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,15 +22,14 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
-//If pressed loads the PostMapFragment
+            //If pressed loads the PostMapFragment
             if (item.getItemId() == R.id.miPost && !(selectedFragment instanceof PostMapFragment))
                 selectedFragment = new PostMapFragment();
-//If pressed loads the SearchMapFragment
+            //If pressed loads the SearchMapFragment
             if (item.getItemId() == R.id.miSearch && !(selectedFragment instanceof SearchMapFragment))
                 selectedFragment = new SearchMapFragment();
- //If pressed loads the SearchMapFragment
+            //If pressed loads the SearchMapFragment
             if (item.getItemId() == R.id.miProfile && !(selectedFragment instanceof RequestsFragment))
                 selectedFragment = new RequestsFragment();
 
@@ -39,10 +37,9 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
             return true;
         });
-
     }
 
-  //It saves the state and if the app is in fullscreen
+    //It saves whether the app is in fullscreen mode or not
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -76,11 +73,9 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.Toggl
 
 
     @Override
-    public void onToggleFullscreen() {
+    public void toggleFullscreen() {
         isFullscreen = !isFullscreen;
-        if (isFullscreen)
-            hideBottomNavigationView(200);
-        else
-            showBottomNavigationView(200);
+        if (isFullscreen) hideBottomNavigationView(200);
+        else showBottomNavigationView(200);
     }
 }

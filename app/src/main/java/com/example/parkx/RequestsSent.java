@@ -28,25 +28,26 @@ public class RequestsSent extends Fragment {
     List<Integer> ids = new ArrayList<>();
     List<RequestStatus> statuses = new ArrayList<>();
 
-
+    // This method is called when the fragment's view is created.
+    // It inflates the layout for the fragment and sets up a RecyclerView to display requests sent by the user.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests_sent, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-     //After the view is created the SupabaseManager method getRequestsSent is called
+        //After the view is created the SupabaseManager method getRequestsSent is called
         SupabaseManager.getRequestsSent(new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<Request> value) {
 
-    //If the database retrieved the spots a string is created with the name of the owner which the current user sent a request to and is added to the titles list
-
+                // If the database retrieved the spots, a string is created with the
+                // name of the owner to whom the current user sent a request and is added to the titles list
                 for (Request request : value) {
                     String title = "You have requested " + request.getOwnerName() + " " + request.getOwnerSurname() + "'s spot at coordinates :";
 
                     titles.add(title);
-      //The coordinates are provided to details list
+                    //The coordinates are provided to details list
                     details.add(String.format("(%.5f %.5f)", request.getLatitude(), request.getLongitude()) + " at \n" + request.getExchangeTime().format(
                             java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 
@@ -72,7 +73,7 @@ public class RequestsSent extends Fragment {
 
             @Override
             public void onError(@NotNull Throwable exception) {
- //If the database method fails it displays an error
+                //If the database method fails it displays an error
 
                 titles.clear();
                 details.clear();
