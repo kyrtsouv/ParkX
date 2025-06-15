@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">ParkX</string>
-    <string name="title_activity_maps">MapsActivity</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="welcome_to_parkx">Welcome to PARKX!</string>
-    <string name="title_activity_menu">title_activity_menu\n</string>
     <string name="item_title">Item_title</string>
     <string name="item_detail">Item_detail</string>
     <string name="item_image_description">Item_image_description</string>
@@ -21,7 +19,6 @@
     <string name="search">Search</string>
     <string name="post">Post</string>
     <string name="profile">Profile</string>
-    <string name="Mail_validation_request">Please enter a valid email address.</string>
     <string name="invalid_credentials">Invalid email or password</string>
     <string name="authRest_generic_error">"An error occurred: "</string>
     <string name="network_error">Network error. Please check your internet connection.</string>
@@ -29,7 +26,6 @@
     <string name="email_already_in_use">This email is in use. Please choose a different one</string>
     <string name="not_valid_email">Please enter a valid Email</string>
     <string name="log_out">Log out</string>
-    <string name="searching">Searching</string>
     <string name="searching_parking_spot">Searching parking spot inside a 1000m radius from the marker</string>
     <string name="make_a_request">Make a request</string>
     <string name="parking_spot_question">Do you want to add this parking spot ?</string>
@@ -37,4 +33,10 @@
     <string name="parking_spot_added">Parking spot added</string>
     <string name="error_mismatched_data">Error: Mismatched data</string>
     <string name="error_no_data_available">Error: No data available</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="datetime">DateTime</string>
+    <string name="requests_sent">Requests sent</string>
+    <string name="requests_received">Requests Received</string>
+    <string name="my_parking_spots">My Parking spots</string>
 </resources>

@@ -5,6 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// This object provides a function to run a suspend function in an IO coroutine and handles
+// the result or error back in the MAIN coroutine using a JavaResultCallback.
+// This allows us to execute suspend functions from Java code for backend operations.
 object CoroutineExecutor {
     @JvmStatic
     fun <T> runSuspend(

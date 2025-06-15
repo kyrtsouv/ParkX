@@ -5,6 +5,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// This object contains suspended methods for user authentication using Supabase
 object AuthService {
     suspend fun signIn(email: String, password: String): String {
         SupabaseManager.client.auth.signInWith(Email) {

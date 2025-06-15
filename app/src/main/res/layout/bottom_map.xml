@@ -3,7 +3,6 @@
     android:id="@+id/bottom_map"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
     android:orientation="vertical"
     android:padding="32dp">
 
@@ -13,13 +12,11 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingBottom="12dp"
-        android:text="Τίτλος Marker"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/button_MAP"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Αίτηση Σύζευξης" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

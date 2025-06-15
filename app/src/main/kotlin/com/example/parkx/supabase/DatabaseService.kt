@@ -12,13 +12,14 @@ import kotlinx.serialization.json.put
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+// This object contains suspend methods for interacting with the Supabase database
 object DatabaseService {
 
     private fun getInstant(localDateTime: LocalDateTime): kotlinx.datetime.Instant {
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toKotlinInstant()
     }
 
-    suspend fun getSpots(
+    suspend fun getNearbySpots(
         latitude: Double, longitude: Double, targetTime: LocalDateTime
     ): List<ParkingSpot> {
 
@@ -67,7 +68,7 @@ object DatabaseService {
     }
 
     suspend fun acceptRequest(
-        requestId: Int
+        id: Int
     ): String {
         SupabaseManager.client.from("requests").update(
             {
@@ -75,7 +76,7 @@ object DatabaseService {
             }
         ) {
             filter {
-                eq("id", requestId)
+                eq("id", id)
             }
         }
 

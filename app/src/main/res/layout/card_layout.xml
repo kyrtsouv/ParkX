@@ -34,22 +34,21 @@
 
         <Button
             android:id="@+id/btn_accept"
-            card_view:layout_constraintEnd_toStartOf="@id/btn_reject"
-            android:text="accept"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@id/item_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/accept"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@id/btn_reject"
+            card_view:layout_constraintTop_toBottomOf="@id/item_title" />
 
         <Button
             android:id="@+id/btn_reject"
-            android:text="reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/reject"
             card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@id/item_title"
             card_view:layout_constraintEnd_toStartOf="@id/item_image"
-            />
+            card_view:layout_constraintTop_toBottomOf="@id/item_title" />
 
         <TextView
             android:id="@+id/item_detail"

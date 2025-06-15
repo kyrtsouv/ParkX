@@ -89,15 +89,9 @@ public class SearchMapFragment extends MapFragment {
         //It creates a marker for each parking spot and adds it
         for (ParkingSpot p : parkingSpots) {
             markers_P.add(makeMarker(p));
-        }
-        //If a bottom map request dialog was previously visible, it reopens it with the parking spot marker that matches the request ID.
-        if (bottomMapRequestVisible && requestId != -1) {
-            for (Marker marker : markers_P) {
-                if (((ParkingSpot) marker.getTag()).getId() == requestId) {
-                    bottomMapRequest(marker);
-                    break;
-                }
-            }
+            if (p.getId() == requestId)
+                // If there was an ongoing request, it reopens the bottom map request dialog for that marker
+                bottomMapRequest(markers_P.get(markers_P.size() - 1));
         }
     }
 
@@ -121,7 +115,8 @@ public class SearchMapFragment extends MapFragment {
     private void checkParking(Marker marker) {
         LatLng temp = marker.getPosition();
 
-        SupabaseManager.getSpots(temp.latitude, temp.longitude, dateTime, new JavaResultCallback<>() {
+        markers_P.clear();
+        SupabaseManager.getNearbySpots(temp.latitude, temp.longitude, dateTime, new JavaResultCallback<>() {
             @Override
             public void onSuccess(List<ParkingSpot> value) {
                 parkingSpots = value;
@@ -188,10 +183,13 @@ public class SearchMapFragment extends MapFragment {
         TextView title = view.findViewById(R.id.textView_MAP);
         Button actionButton = view.findViewById(R.id.button_MAP);
 
-        title.setText(marker.getTitle());
+        ParkingSpot ps = (ParkingSpot) marker.getTag();
+
+        title.setText("(" + ps.getLatitude() + ", " + ps.getLongitude() + ")" + "\n" + ps.getExchangeTime().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+
         actionButton.setText(R.string.make_a_request);
         actionButton.setOnClickListener(v -> {
-            bottomDialog.dismiss();
+            bottomDialog.cancel();
             addRequest(marker);
         });
 

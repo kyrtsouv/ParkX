@@ -8,6 +8,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
+// This file contains data classes used for automatic serialization and deserialization
+// of data related to parking spots and requests returned by the API's methods.
+
 @Serializable
 data class NewParkingSpot(
     val longitude: Double,
@@ -52,7 +55,5 @@ data class Request(
 
 @Serializable
 enum class RequestStatus {
-    PENDING,
-    ACCEPTED,
-    REJECTED;
+    PENDING, ACCEPTED, REJECTED;
 }

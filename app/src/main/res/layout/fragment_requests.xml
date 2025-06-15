@@ -47,19 +47,19 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Requests sent"
+            android:text="@string/requests_sent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Requests Received"
+            android:text="@string/requests_received"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Parking spots"
+            android:text="@string/my_parking_spots"
             app:layout_constraintStart_toStartOf="parent" />
 
     </com.google.android.material.tabs.TabLayout>
